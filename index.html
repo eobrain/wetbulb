@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Web Bulb</title>
+        <title>Sweatability</title>
         <script src="index.js" type="module"></script>
     </head>
     <body>
-        <h1>Wet Bulb</h1>
-        <p>Can you cool by sweating?</p>
+        <h1>Sweatability</h1>
+        <p>
+            This is the difference between wet bulb temperature
+            and human body temperature.
+            A sweatability of 6 or less is unhealthy.
+            A sweatability of 2 or less will kill you.
+        </p>
+        <table>
+            <tr><th>Place</th><td id="$place"></td></tr>
+            <tr><th>Temperature (C)</th><td id="$temp"></td></tr>
+            <tr><th>Humidity (%)</th><td id="$humidity"></td></tr>
+            <tr><th>Sweatability (C)</th><td id="$sweatability"></td></tr>
+        </table>
     </body>
 </html>
