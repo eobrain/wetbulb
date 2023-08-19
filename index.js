@@ -12,15 +12,25 @@ const HUMAN_BODY_TEMP = 37
 
 const FRANZ = { lat: 38.581621, lon: -122.609887 }
 
-const { main, name } = await openweathermap(FRANZ)
+async function show (latLon) {
+  const { main, name } = await openweathermap(latLon)
 
-const { temp, humidity } = main
+  const { temp, humidity } = main
 
-const wetBulbTemp = wetbulb(temp, humidity)
+  const wetBulbTemp = wetbulb(temp, humidity)
 
-const sweatability = HUMAN_BODY_TEMP - wetBulbTemp
+  const sweatability = HUMAN_BODY_TEMP - wetBulbTemp
 
-$place.innerText = name
-$temp.innerText = Math.round(temp)
-$humidity.innerText = Math.round(humidity)
-$sweatability.innerText = Math.round(sweatability)
+  $place.innerText = name
+  $temp.innerText = Math.round(temp)
+  $humidity.innerText = Math.round(humidity)
+  $sweatability.innerText = Math.round(sweatability)
+}
+
+navigator.geolocation.getCurrentPosition(async (position) => {
+  const { coords } = position
+  const { latitude: lat, longitude: lon } = coords
+  await show({ lat, lon })
+}, async () => {
+  await show(FRANZ)
+})
