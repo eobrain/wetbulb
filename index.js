@@ -1,7 +1,7 @@
 import openweathermap from './openweathermap.js'
 import wetbulb from './wetbulb.js'
 
-/* global $place $temp $humidity $sweatability $here $best $worst $better $worse */
+/* global $place $temp $tempF $humidity $sweatability $here $best $worst $better $worse */
 
 // All temperatures on Celcius
 
@@ -28,8 +28,10 @@ const get = async (location) => {
 }
 
 async function show ({ name, temp, humidity, sweatability }) {
-  $place.innerText = name
+  $place.innerText = name || `${place.lat},${place.lon}`
+  $place.href = `https://maps.google.com/?ll=${place.lat},${place.lon}&q=${place.lat},${place.lon}&z=8`
   $temp.innerText = Math.round(temp)
+  $tempF.innerText = Math.round(temp * 9 / 5 + 32)
   $humidity.innerText = Math.round(humidity)
   $sweatability.innerText = Math.round(sweatability)
   $better.disabled = false
@@ -51,7 +53,7 @@ $here.onclick = () =>
 
 const D = 5 * KM_IN_LAT_DEG
 const DELTAS = [[-D, 0], [D, 0], [0, -D], [0, D]]
-async function move (up) {
+async function hillclimbMove (up) {
   let optimalLatLon = place
   let optimalSweatability = sweatabilityAtPlace
   let optimalResult
@@ -59,7 +61,9 @@ async function move (up) {
     const [dLat, dLon] = delta
     const latLon = { lat: place.lat + dLat, lon: place.lon + dLon }
     const result = await get(latLon)
-    const accept = !!((result.sweatability > optimalSweatability) ^ up)
+    const dSweatability = result.sweatability - optimalSweatability
+    const dImprovement = up ? -dSweatability : dSweatability
+    const accept = dImprovement > 0
     if (accept) {
       optimalLatLon = latLon
       optimalSweatability = result.sweatability
@@ -75,6 +79,21 @@ async function move (up) {
   }
   return false
 }
+async function annealMove (up, annealT) {
+  const latLon = { lat: Math.random() * 180 - 90, lon: Math.random() * 360 - 180 }
+  const result = await get(latLon)
+  const dSweatability = result.sweatability - sweatabilityAtPlace
+  const dImprovement = up ? -dSweatability : dSweatability
+  const accept = Math.exp(dImprovement / annealT) > Math.random()
+  if (accept) {
+    place.lat = latLon.lat
+    place.lon = latLon.lon
+    sweatabilityAtPlace = result.sweatability
+    await show(result)
+    return true
+  }
+  return false
+}
 
 const sleep = (delayMs) => new Promise((resolve) => setTimeout(resolve, delayMs))
 
@@ -84,7 +103,7 @@ async function hillClimb (up) {
   $worst.disabled = true
   $better.disabled = true
   $worse.disabled = true
-  while (await move(up)) {
+  while (await hillclimbMove(up)) {
     await sleep(4000)
   }
   $here.disabled = false
@@ -94,5 +113,31 @@ async function hillClimb (up) {
   $worse.disabled = false
 }
 
+async function anneal (up) {
+  place.lat = Math.random() * 180 - 90
+  place.lon = Math.random() * 360 - 180
+  const result = await get(place)
+  sweatabilityAtPlace = result.sweatability
+  await show(result)
+
+  $here.disabled = true
+  $best.disabled = true
+  $worst.disabled = true
+  $better.disabled = true
+  $worse.disabled = true
+  for (let annealT = 100; annealT > 0.01; annealT *= 0.9) {
+    console.log({ annealT })
+    await annealMove(up, annealT)
+    await sleep(4000)
+  }
+  $here.disabled = false
+  $best.disabled = false
+  $worst.disabled = false
+  $better.disabled = false
+  $worse.disabled = false
+}
+
+$worst.onclick = () => anneal(true)
+$best.onclick = () => anneal(false)
 $worse.onclick = () => hillClimb(true)
 $better.onclick = () => hillClimb(false)
