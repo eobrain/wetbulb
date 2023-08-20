@@ -70,7 +70,11 @@ $here.onclick = () =>
   })
 
 const D = 5 * KM_IN_LAT_DEG
-const DELTAS = [[-D, 0], [D, 0], [0, -D], [0, D]]
+const DELTAS = [
+  [-D, -D], [-D, 0], [-D, D],
+  [0, -D], [0, D],
+  [D, -D], [D, 0], [D, D]
+]
 async function hillclimbMove (up) {
   let optimalLatLon = place
   let optimalSweatability = sweatabilityAtPlace
