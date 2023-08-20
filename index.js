@@ -125,10 +125,10 @@ async function anneal (up) {
   $worst.disabled = true
   $better.disabled = true
   $worse.disabled = true
-  for (let annealT = 100; annealT > 0.01; annealT *= 0.9) {
+  for (let annealT = 5; annealT > 0.01; annealT *= 0.98) {
     console.log({ annealT })
     await annealMove(up, annealT)
-    await sleep(4000)
+    await sleep(1000)
   }
   $here.disabled = false
   $best.disabled = false
