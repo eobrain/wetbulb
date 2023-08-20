@@ -13,10 +13,8 @@ const uncached = async ({ lat, lon }) => {
 export default async (location) => {
   const key = JSON.stringify(location)
   if (cache.has(key)) {
-    console.log('HIT')
     return cache.get(key)
   }
-  console.log('MISS')
   const result = uncached(location)
   cache.set(key, result)
   return result

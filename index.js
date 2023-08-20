@@ -31,16 +31,17 @@ let hitCount = 0
 let totalCount = 0
 
 const get = async (location) => {
+  if ((totalCount % 100) === 99) {
+    console.log(`hit rate ${Math.round(100 * hitCount / totalCount)}`)
+  }
   const key = JSON.stringify(location)
   ++totalCount
   if (cache.has(key)) {
     ++hitCount
-    console.log(`hit rate ${Math.round(100 * hitCount / totalCount)}`)
     return cache.get(key)
   }
   const result = await uncachedGet(location)
   cache.set(key, result)
-  console.log(`hit rate ${Math.round(100 * hitCount / totalCount)}`)
   return result
 }
 
@@ -76,7 +77,7 @@ $here.onclick = () =>
 
 const randomElement = array => array[Math.floor(Math.random() * array.length)]
 
-const D = 5 * KM_IN_LAT_DEG
+const D = KM_IN_LAT_DEG
 const DELTAS = [
   [-D, -D], [-D, 0], [-D, D],
   [0, -D], [0, D],
@@ -173,9 +174,9 @@ async function anneal (up) {
   $worst.disabled = true
   $better.disabled = true
   $worse.disabled = true
-  for (let scale = 1000; scale >= 1; scale /= 10) {
-    for (let annealT = 5; annealT > 0.01; annealT *= 0.98) {
-      console.log({ scale, annealT })
+  for (let scale = 16384; scale >= 1; scale /= 2) {
+    console.log({ scale })
+    for (let annealT = 1; annealT > 0.01; annealT *= 0.8) {
       await annealMove(up, annealT, scale)
       await sleep(200)
     }
