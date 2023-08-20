@@ -16,7 +16,7 @@ const KM_IN_LAT_DEG = 0.008
 const place = {}
 let sweatabilityAtPlace
 
-const get = async (location) => {
+const uncachedGet = async (location) => {
   const { main, name } = await openweathermap(location)
 
   const { temp, humidity } = main
@@ -27,9 +27,27 @@ const get = async (location) => {
   return { name, temp, humidity, sweatability }
 }
 
+const cache = new Map()
+let hitCount = 0
+let totalCount = 0
+
+const get = async (location) => {
+  const key = JSON.stringify(location)
+  ++totalCount
+  if (cache.has(key)) {
+    ++hitCount
+    console.log(`hit rate ${Math.round(100 * hitCount / totalCount)}`)
+    return cache.get(key)
+  }
+  const result = await uncachedGet(location)
+  cache.set(key, result)
+  console.log(`hit rate ${Math.round(100 * hitCount / totalCount)}`)
+  return result
+}
+
 async function show ({ name, temp, humidity, sweatability }) {
   $place.innerText = name || `${place.lat},${place.lon}`
-  $place.href = `https://maps.google.com/?ll=${place.lat},${place.lon}&q=${place.lat},${place.lon}&z=8`
+  $place.href = `https://maps.google.com/?ll=${place.lat},${place.lon}&q=${place.lat},${place.lon}&z=12`
   $temp.innerText = Math.round(temp)
   $tempF.innerText = Math.round(temp * 9 / 5 + 32)
   $humidity.innerText = Math.round(humidity)
