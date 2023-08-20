@@ -69,6 +69,8 @@ $here.onclick = () =>
     throw new Error(error)
   })
 
+const randomElement = array => array[Math.floor(Math.random() * array.length)]
+
 const D = 5 * KM_IN_LAT_DEG
 const DELTAS = [
   [-D, -D], [-D, 0], [-D, D],
@@ -101,8 +103,18 @@ async function hillclimbMove (up) {
   }
   return false
 }
-async function annealMove (up, annealT) {
-  const latLon = { lat: Math.random() * 180 - 90, lon: Math.random() * 360 - 180 }
+
+const latMod = lon => lon > 90 ? lon - 180 : (lon < -90 ? lon + 180 : lon)
+const lonMod = lon => lon > 180 ? lon - 360 : (lon < -180 ? lon + 360 : lon)
+
+async function annealMove (up, annealT, scale) {
+  const delta = randomElement(DELTAS)
+  const [dLat, dLon] = delta
+  const latLon = {
+    lat: latMod(place.lat + dLat * scale),
+    lon: lonMod(place.lon + dLon * scale)
+  }
+
   const result = await get(latLon)
   const dSweatability = result.sweatability - sweatabilityAtPlace
   const dImprovement = up ? -dSweatability : dSweatability
@@ -147,10 +159,12 @@ async function anneal (up) {
   $worst.disabled = true
   $better.disabled = true
   $worse.disabled = true
-  for (let annealT = 5; annealT > 0.01; annealT *= 0.98) {
-    console.log({ annealT })
-    await annealMove(up, annealT)
-    await sleep(1000)
+  for (let scale = 1000; scale >= 1; scale /= 10) {
+    for (let annealT = 5; annealT > 0.01; annealT *= 0.98) {
+      console.log({ scale, annealT })
+      await annealMove(up, annealT, scale)
+      await sleep(200)
+    }
   }
   $here.disabled = false
   $best.disabled = false
