@@ -11,7 +11,12 @@ const place = {}
 let sweatabilityAtPlace
 
 const uncachedGet = async (location) => {
-  const { main, name } = await openweathermap(location)
+  const name = await geocode(location)
+  if (!name) {
+    return undefined
+  }
+
+  const { main } = await openweathermap(location)
 
   const { temp, humidity } = main
 
@@ -39,9 +44,11 @@ const get = async (location) => {
   return result
 }
 
+const mapUrl = ({ lat, lon }) => `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
+
 async function show ({ name, temp, humidity, sweatability }) {
-  $place.innerText = (await geocode(place)) || name || `${place.lat},${place.lon}`
-  $place.href = `https://maps.google.com/?ll=${place.lat},${place.lon}&q=${place.lat},${place.lon}&z=8`
+  $place.innerText = name || `${place.lat},${place.lon}`
+  $place.href = mapUrl(place)
   $temp.innerText = Math.round(temp)
   $tempF.innerText = Math.round(temp * 9 / 5 + 32)
   $humidity.innerText = Math.round(humidity)
@@ -56,7 +63,11 @@ $here.onclick = () =>
     const { latitude, longitude } = coords
     place.lat = latitude
     place.lon = longitude
-    const { name, temp, humidity, sweatability } = await get(place)
+    const result = await get(place)
+    if (!result) {
+      throw new Error(`${mapUrl(place)} not a known place`)
+    }
+    const { name, temp, humidity, sweatability } = result
     sweatabilityAtPlace = sweatability
     await show({ name, temp, humidity, sweatability })
   }, async (error) => {
@@ -79,6 +90,9 @@ async function hillclimbMove (up) {
     const [dLat, dLon] = delta
     const latLon = { lat: place.lat + dLat, lon: place.lon + dLon }
     const result = await get(latLon)
+    if (!result) {
+      continue
+    }
     const dSweatability = result.sweatability - optimalSweatability
     const dImprovement = up ? -dSweatability : dSweatability
     const accept = dImprovement > 0
@@ -110,6 +124,9 @@ async function annealMove (up, annealT, scale) {
   }
 
   const result = await get(latLon)
+  if (!result) {
+    return false
+  }
   const dSweatability = result.sweatability - sweatabilityAtPlace
   const dImprovement = up ? -dSweatability : dSweatability
   const accept = Math.exp(dImprovement / annealT) > Math.random()
@@ -142,9 +159,12 @@ async function hillClimb (up) {
 }
 
 async function anneal (up) {
-  place.lat = Math.random() * 180 - 90
-  place.lon = Math.random() * 360 - 180
-  const result = await get(place)
+  let result
+  while (!result) {
+    place.lat = Math.random() * 180 - 90
+    place.lon = Math.random() * 360 - 180
+    result = await get(place)
+  }
   sweatabilityAtPlace = result.sweatability
   await show(result)
 
