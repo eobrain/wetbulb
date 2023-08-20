@@ -41,7 +41,7 @@ const get = async (location) => {
 
 async function show ({ name, temp, humidity, sweatability }) {
   $place.innerText = (await geocode(place)) || name || `${place.lat},${place.lon}`
-  $place.href = `https://maps.google.com/?ll=${place.lat},${place.lon}&q=${place.lat},${place.lon}&z=12`
+  $place.href = `https://maps.google.com/?ll=${place.lat},${place.lon}&q=${place.lat},${place.lon}&z=8`
   $temp.innerText = Math.round(temp)
   $tempF.innerText = Math.round(temp * 9 / 5 + 32)
   $humidity.innerText = Math.round(humidity)
