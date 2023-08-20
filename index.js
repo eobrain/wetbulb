@@ -1,5 +1,6 @@
 import openweathermap from './openweathermap.js'
 import wetbulb from './wetbulb.js'
+import geocode from './geocode.js'
 
 /* global $place $temp $tempF $humidity $sweatability $here $best $worst $better $worse */
 
@@ -46,7 +47,7 @@ const get = async (location) => {
 }
 
 async function show ({ name, temp, humidity, sweatability }) {
-  $place.innerText = name || `${place.lat},${place.lon}`
+  $place.innerText = (await geocode(place)) || name || `${place.lat},${place.lon}`
   $place.href = `https://maps.google.com/?ll=${place.lat},${place.lon}&q=${place.lat},${place.lon}&z=12`
   $temp.innerText = Math.round(temp)
   $tempF.innerText = Math.round(temp * 9 / 5 + 32)
