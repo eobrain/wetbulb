@@ -12,11 +12,16 @@
             A sweatability of 6 or less is unhealthy.
             A sweatability of 2 or less will kill you.
         </p>
+        <button id="$here">At Your Location</button>
+        <button id="$best">Best in World  </button>
+        <button id="$worst">Worst in World  </button>
+        <button id="$better" disabled>Better</button>
+        <button id="$worse" disabled>Worse</button>
         <table>
             <tr><th>Place</th><td id="$place"></td></tr>
-            <tr><th>Temperature (C)</th><td id="$temp"></td></tr>
-            <tr><th>Humidity (%)</th><td id="$humidity"></td></tr>
-            <tr><th>Sweatability (C)</th><td id="$sweatability"></td></tr>
+            <tr><th>Temperature</th><td><span id="$temp"></span>°C</td></tr>
+            <tr><th>Humidity</th><td><span id="$humidity"></span>%</td></tr>
+            <tr><th>Sweatability</th><td id="$sweatability"></td></tr>
         </table>
     </body>
 </html>
