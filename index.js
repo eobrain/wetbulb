@@ -3,6 +3,8 @@ import wetbulb from './wetbulb.js'
 import geocode from './geocode.js'
 
 /* global $place $temp $tempF $humidity $sweatability $here $best $worst $better $worse */
+const $hygrometer = document.getElementById('hygrometer')
+const $thermometer = document.getElementById('thermometer')
 
 const HUMAN_BODY_TEMP_C = 37
 const KM_IN_LAT_DEG = 0.008
@@ -54,6 +56,8 @@ async function show ({ name, temp, humidity, sweatability }) {
   $tempF.innerText = Math.round(temp * 9 / 5 + 32)
   $humidity.innerText = Math.round(humidity)
   $sweatability.innerText = Math.round(sweatability)
+  $hygrometer.style.width = `${humidity}vw`
+  $thermometer.style.height = `${temp * 2}vh`
   $better.disabled = false
   $worse.disabled = false
 }

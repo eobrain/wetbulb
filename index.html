@@ -1,31 +1,44 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Sweatability</title>
-        <script src="index.js" type="module"></script>
-    </head>
-    <body>
-        <h1>Sweatability</h1>
-        <p>
-            This is the difference between wet bulb temperature
-            and human body temperature.
-            <ul>
-                <li>Less than 16 is uncomfortable</li>
-                <li>Less than 8 has killed tens of thousands in heatwaves</li>
-                <li>Less than 6 makes it impossible to do physical labor</li>
-                <li>Less than 2 will kill you</li>
-            </ul>
-        </p>
-        <button id="$here">At Your Location</button>
-        <button id="$best">Best in World  </button>
-        <button id="$worst">Worst in World  </button>
-        <button id="$better" disabled>Better</button>
-        <button id="$worse" disabled>Worse</button>
-        <table>
-            <tr><th>Place</th><td><a id="$place" target="_blank"></a></td></tr>
-            <tr><th>Temperature</th><td><span id="$temp"></span>°C / <span id="$tempF"></span>°F</td></tr>
-            <tr><th>Humidity</th><td><span id="$humidity"></span>%</td></tr>
-            <tr><th>Sweatability</th><td id="$sweatability"></td></tr>
-        </table>
-    </body>
+
+<head>
+    <title>Sweatability</title>
+    <script src="index.js" type="module"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <h1>Sweatability</h1>
+    <p>
+        This is the difference between wet bulb temperature
+        and human body temperature.
+    <ul>
+        <li>Less than 16 is uncomfortable</li>
+        <li>Less than 8 has killed tens of thousands in heatwaves</li>
+        <li>Less than 6 makes it impossible to do physical labor</li>
+        <li>Less than 2 will kill you</li>
+    </ul>
+    </p>
+    <p><a id="$place" target="_blank"></a></p>
+    <h1 id="$sweatability"></h1>
+    <div>
+        <!-- img id="thermometer"
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjuH3u3n8ACJYDh0LizgoAAAAASUVORK5CYII="-->
+        <img id="thermometer" src="img/cylinder-strip.jpg">
+        <span id="$temp"></span>°C / <span id="$tempF"></span>°F
+    </div>
+    <div>
+        <img id="hygrometer"
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjEJR9/B8AA2UCEf/VatoAAAAASUVORK5CYII=">
+        <div>
+            <span id="$humidity"></span>% Humidity
+        </div>
+    </div>
+    <button id="$here">At Your Location</button>
+    <button id="$best">Best in World </button>
+    <button id="$worst">Worst in World </button>
+    <button id="$better" disabled>Better</button>
+    <button id="$worse" disabled>Worse</button>
+</body>
+
 </html>
