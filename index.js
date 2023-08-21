@@ -2,7 +2,7 @@ import openweathermap from './openweathermap.js'
 import wetbulb from './wetbulb.js'
 import geocode from './geocode.js'
 
-/* global $place $temp $tempF $humidity $sweatability $here $best $worst $better $worse */
+/* global $place $temp $tempF $humidity $guage $sweatability $here $best $worst $better $worse */
 const $hygrometer = document.getElementById('hygrometer')
 const $thermometer = document.getElementById('thermometer')
 
@@ -49,15 +49,33 @@ const get = async (location) => {
 
 const mapUrl = ({ lat, lon }) => `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
 
+function guageVariables (sweatability) {
+  const MAX_S = 40
+  const MIN_S = 0
+  const MAX_DEG = 135
+  const MIN_DEG = -135
+  const R = 92.5 / 2
+  const X0 = 41
+  const Y0 = R
+  const deg = MIN_DEG + (MAX_DEG - MIN_DEG) * (sweatability - MIN_S) / (MAX_S - MIN_S)
+  const x = X0 - R * Math.cos(deg * Math.PI / 180)
+  const y = Y0 + R * Math.sin(deg * Math.PI / 180)
+  return { deg, x, y }
+}
+
 async function show ({ name, temp, humidity, sweatability }) {
   $place.innerText = name || `${place.lat},${place.lon}`
   $place.href = mapUrl(place)
   $temp.innerText = Math.round(temp)
   $tempF.innerText = Math.round(temp * 9 / 5 + 32)
   $humidity.innerText = Math.round(humidity)
+  const { deg, x, y } = guageVariables(sweatability)
+  $guage.style.setProperty('--pointerdeg', `${deg}deg`)
+  $guage.style.setProperty('--pointertop', `${x}%`)
+  $guage.style.setProperty('--pointerleft', `${y}%`)
   $sweatability.innerText = Math.round(sweatability)
-  $hygrometer.style.width = `${humidity}vw`
-  $thermometer.style.height = `${temp * 2}vh`
+  $hygrometer.value = humidity
+  $thermometer.value = temp
   $better.disabled = false
   $worse.disabled = false
 }
@@ -180,7 +198,7 @@ async function anneal (up) {
   $worse.disabled = true
   for (let scale = 16384; scale >= 1; scale /= 2) {
     console.log({ scale })
-    for (let annealT = 1; annealT > 0.01; annealT *= 0.8) {
+    for (let annealT = 1; annealT > 0.01; annealT *= 0.9) {
       await annealMove(up, annealT, scale)
       await sleep(200)
     }

@@ -1,6 +1,3 @@
-#hygrometer {
-    height:1vw
-}
-#thermometer {
-    width: 1vw
+meter {
+    width: 50vw
 }

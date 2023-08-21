@@ -5,6 +5,7 @@
     <title>Sweatability</title>
     <script src="index.js" type="module"></script>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="guage.css">
 </head>
 
 <body>
@@ -20,20 +21,21 @@
     </ul>
     </p>
     <p><a id="$place" target="_blank"></a></p>
-    <h1 id="$sweatability"></h1>
-    <div>
-        <!-- img id="thermometer"
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjuH3u3n8ACJYDh0LizgoAAAAASUVORK5CYII="-->
-        <img id="thermometer" src="img/cylinder-strip.jpg">
-        <span id="$temp"></span>°C / <span id="$tempF"></span>°F
-    </div>
-    <div>
-        <img id="hygrometer"
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjEJR9/B8AA2UCEf/VatoAAAAASUVORK5CYII=">
-        <div>
-            <span id="$humidity"></span>% Humidity
+    <!--h1 id="$sweatability"></h1-->
+    <div id="$guage" class="ring">
+        <div class="speed">
+            <div class="number" id="$sweatability">21</div>
+            <div class="units">Sweatability</div>
         </div>
     </div>
+    <label>
+        <meter id="thermometer" min="-20" low="15" optimum="20" high="25" max="55"></meter>
+        <span id="$temp"></span>°C / <span id="$tempF"></span>°F
+    </label>
+    <label>
+        <meter id="hygrometer" min="0" low="30" optimum="40" high="60" max="100"></meter>
+        <span id="$humidity"></span>% Humidity
+    </label>
     <button id="$here">At Your Location</button>
     <button id="$best">Best in World </button>
     <button id="$worst">Worst in World </button>
