@@ -2,7 +2,7 @@ import openweathermap from './openweathermap.js'
 import wetbulb from './wetbulb.js'
 import geocode from './geocode.js'
 
-/* global $place $temp $tempF $humidity $guage $sweatability $here $best $worst $better $worse */
+/* global ol $place $temp $tempF $humidity $guage $sweatability $here $best $worst $better $worse */
 const $hygrometer = document.getElementById('hygrometer')
 const $thermometer = document.getElementById('thermometer')
 
@@ -11,6 +11,59 @@ const KM_IN_LAT_DEG = 0.008
 
 const place = {}
 let sweatabilityAtPlace
+
+const map = new ol.Map({
+  target: 'map',
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.OSM()
+    })
+  ],
+  view: new ol.View({
+    center: ol.proj.fromLonLat([-75, 35]),
+    zoom: 2
+  })
+})
+
+const MAX_S = 32
+const MIN_S = 0
+
+const hexByte = n => ('00' + n.toString(16).toUpperCase()).slice(-2)
+
+const color = sweatability => {
+  let green = Math.trunc(256 * (sweatability - MIN_S) / (MAX_S - MIN_S))
+  if (green < 0) {
+    green = 0
+  }
+  if (green > 255) {
+    green = 255
+  }
+  const red = 255 - green
+  return '#' + hexByte(red) + hexByte(green) + '00'
+}
+
+function drawDot ({ lat, lon }, sweatability) {
+  const features = []
+  features.push(new ol.Feature({
+    geometry: new ol.geom.Point(ol.proj.fromLonLat([
+      lon, lat
+    ]))
+  }))
+  // create the source and layer for random features
+  const vectorSource = new ol.source.Vector({
+    features
+  })
+  const vectorLayer = new ol.layer.Vector({
+    source: vectorSource,
+    style: new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 10,
+        fill: new ol.style.Fill({ color: color(sweatability) })
+      })
+    })
+  })
+  map.addLayer(vectorLayer)
+}
 
 const uncachedGet = async (location) => {
   const name = await geocode(location)
@@ -50,8 +103,6 @@ const get = async (location) => {
 const mapUrl = ({ lat, lon }) => `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
 
 function guageVariables (sweatability) {
-  const MAX_S = 32
-  const MIN_S = 0
   if (sweatability > MAX_S) {
     sweatability = MAX_S
   }
@@ -70,6 +121,7 @@ function guageVariables (sweatability) {
 }
 
 async function show ({ name, temp, humidity, sweatability }) {
+  drawDot(place, sweatability)
   $place.innerText = name || `${place.lat},${place.lon}`
   $place.href = mapUrl(place)
   $temp.innerText = Math.round(temp)

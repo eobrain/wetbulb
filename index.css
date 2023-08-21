@@ -1,3 +1,8 @@
 meter {
     width: 50vw
 }
+
+.map {
+    height: 400px;
+    width: 100%;
+  }
