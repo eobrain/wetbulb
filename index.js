@@ -50,8 +50,14 @@ const get = async (location) => {
 const mapUrl = ({ lat, lon }) => `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
 
 function guageVariables (sweatability) {
-  const MAX_S = 40
+  const MAX_S = 32
   const MIN_S = 0
+  if (sweatability > MAX_S) {
+    sweatability = MAX_S
+  }
+  if (sweatability < MIN_S) {
+    sweatability = MIN_S
+  }
   const MAX_DEG = 135
   const MIN_DEG = -135
   const R = 92.5 / 2
