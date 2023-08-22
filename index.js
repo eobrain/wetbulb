@@ -41,9 +41,9 @@ const color = sweatability => {
   let red = 0xFF
   let green = 0xFF
   if (twiceByte <= 0xFF) {
-    red = twiceByte
+    green = twiceByte
   } else {
-    green = twiceByte - 0x100
+    red = 0x200 - twiceByte
   }
   return '#' + hexByte(red) + hexByte(green) + '00'
 }
