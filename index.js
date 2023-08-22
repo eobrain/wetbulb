@@ -31,14 +31,20 @@ const MIN_S = 0
 const hexByte = n => ('00' + n.toString(16).toUpperCase()).slice(-2)
 
 const color = sweatability => {
-  let green = Math.trunc(256 * (sweatability - MIN_S) / (MAX_S - MIN_S))
-  if (green < 0) {
-    green = 0
+  let twiceByte = Math.trunc(0x200 * (sweatability - MIN_S) / (MAX_S - MIN_S))
+  if (twiceByte < 0) {
+    twiceByte = 0
   }
-  if (green > 255) {
-    green = 255
+  if (twiceByte > 0x1FF) {
+    twiceByte = 0x1FF
   }
-  const red = 255 - green
+  let red = 0xFF
+  let green = 0xFF
+  if (twiceByte <= 0xFF) {
+    green = twiceByte
+  } else {
+    red = 0x200 - twiceByte
+  }
   return '#' + hexByte(red) + hexByte(green) + '00'
 }
 
