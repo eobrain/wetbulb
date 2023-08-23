@@ -260,9 +260,10 @@ async function anneal (up) {
   $worst.disabled = true
   $better.disabled = true
   $worse.disabled = true
-  for (let scale = 16384; scale >= 1; scale /= 2) {
-    console.log({ scale })
-    for (let annealT = 1; annealT > 0.01; annealT *= 0.9) {
+  for (let scale = 8192; scale >= 1; scale /= 2) {
+    const annealT = 5 * (scale / 8192) ** 0.5
+    console.log({ scale, annealT })
+    for (let i = 0; i < 100; ++i) {
       await annealMove(up, annealT, scale)
       await sleep(200)
     }
