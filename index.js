@@ -85,8 +85,8 @@ async function show ({ name, temp, humidity, sweatability }) {
   $thermometer.value = temp
 }
 
-$worst.onclick = () => {
+$worst.onclick = async () => {
   $worst.disabled = true
-  anneal(get, show)
+  await anneal(get, show)
   $worst.disabled = false
 }
