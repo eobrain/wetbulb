@@ -33,25 +33,30 @@ const color = (sweatability, minS, maxS) => {
   return '#' + hexByte(red) + hexByte(green) + '00'
 }
 
+const features = []
+
+let vectorLayer
+
 export function drawDot ({ lat, lon }, sweatability, minS, maxS) {
-  const features = []
-  features.push(new ol.Feature({
+  const feature = new ol.Feature({
     geometry: new ol.geom.Point(ol.proj.fromLonLat([
       lon, lat
     ]))
+  })
+  feature.setStyle(new ol.style.Style({
+    image: new ol.style.Circle({
+      radius: 10,
+      fill: new ol.style.Fill({ color: color(sweatability, minS, maxS) })
+    })
   }))
+  features.push(feature)
   // create the source and layer for random features
-  const vectorSource = new ol.source.Vector({
+  const source = new ol.source.Vector({
     features
   })
-  const vectorLayer = new ol.layer.Vector({
-    source: vectorSource,
-    style: new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: 10,
-        fill: new ol.style.Fill({ color: color(sweatability, minS, maxS) })
-      })
-    })
-  })
+  if (vectorLayer) {
+    map.removeLayer(vectorLayer)
+  }
+  vectorLayer = new ol.layer.Vector({ source })
   map.addLayer(vectorLayer)
 }
