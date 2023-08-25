@@ -4,7 +4,7 @@ import geocode from './geocode.js'
 import { anneal, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
-/* global $place $temp $tempF $humidity $guage $sweatability  $worst */
+/* global $place $temp $tempF $humidity $guage $sweatability */
 const $hygrometer = document.getElementById('hygrometer')
 const $thermometer = document.getElementById('thermometer')
 
@@ -85,8 +85,4 @@ async function show ({ name, temp, humidity, sweatability }) {
   $thermometer.value = temp
 }
 
-$worst.onclick = async () => {
-  $worst.disabled = true
-  await anneal(get, show)
-  $worst.disabled = false
-}
+await anneal(get, show)

@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sweatability</title>
     <meta name="description" content="Where in the world are there dangerous combinations of heat and humidity?">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/css/ol.css" type="text/css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/css/ol.css" type="text/css">
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/build/ol.js"></script>
     <script src="index.js" type="module"></script>
     <link rel="stylesheet" href="index.css">
@@ -15,24 +16,16 @@
 
 <body>
     <div id="map" class="map"></div>
+    <div id="guage-place">
 
-    <h1>Sweatability</h1>
-    <p>
-        This is the difference between wet bulb temperature
-        and human body temperature.
-    <ul>
-        <li>Less than 16 is uncomfortable</li>
-        <li>Less than 8 has killed tens of thousands in heatwaves</li>
-        <li>Less than 6 makes it impossible to do physical labor</li>
-        <li>Less than 2 will kill you</li>
-    </ul>
-    </p>
-    <p><a id="$place" target="_blank"></a></p>
-    <!--h1 id="$sweatability"></h1-->
-    <div id="$guage" class="ring">
-        <div class="speed">
-            <div class="number" id="$sweatability">21</div>
-            <div class="units">Sweatability</div>
+        <div id="$guage" class="ring">
+            <div class="speed">
+                <div class="number" id="$sweatability">21</div>
+                <div class="units">Sweatability</div>
+            </div>
+        </div>
+        <div>
+            <a id="$place" target="_blank"></a>
         </div>
     </div>
     <label>
@@ -43,7 +36,17 @@
         <meter id="hygrometer" min="0" low="30" optimum="40" high="60" max="100"></meter>
         <span id="$humidity"></span>% Humidity
     </label>
-    <button id="$worst">Worst in World </button>
+
+    <p>
+        Sweatability is a measure how close you are to being killed by heat,
+        how close the wet bulb temperature is to human body temperature.
+    <ul>
+        <li>Less than 16 is uncomfortable</li>
+        <li>Less than 8 has killed tens of thousands in heatwaves</li>
+        <li>Less than 6 makes it impossible to do physical labor</li>
+        <li>Less than 2 will kill you</li>
+    </ul>
+    </p>
 </body>
 
 </html>
