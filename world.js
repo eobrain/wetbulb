@@ -57,7 +57,7 @@ export function drawDot ({ lat, lon }, sweatability, minS, maxS) {
   marker.setStyle(new ol.style.Style({
     image: new ol.style.Circle({
       radius: 12,
-      stroke: new ol.style.Stroke({ color: [0,0,255] })
+      stroke: new ol.style.Stroke({ color: [0, 0, 255] })
     })
   }))
   features.pop()
