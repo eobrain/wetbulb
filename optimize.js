@@ -53,9 +53,7 @@ export async function anneal (get, show) {
   await show(result)
 
   for (let scale = 8192; scale >= 1; scale /= 2) {
-    const annealT = 5 * (scale / 8192) ** 0.5
-    console.log({ scale, annealT })
-    for (let i = 0; i < 100; ++i) {
+    for (let annealT = 5; annealT >= 0.01; annealT *= 0.9) {
       await annealMove(annealT, scale, get, show)
       await sleep(200)
     }
