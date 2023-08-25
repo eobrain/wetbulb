@@ -43,14 +43,26 @@ export function drawDot ({ lat, lon }, sweatability, minS, maxS) {
       lon, lat
     ]))
   })
+  const marker = new ol.Feature({
+    geometry: new ol.geom.Point(ol.proj.fromLonLat([
+      lon, lat
+    ]))
+  })
   feature.setStyle(new ol.style.Style({
     image: new ol.style.Circle({
       radius: 10,
       fill: new ol.style.Fill({ color: color(sweatability, minS, maxS) })
     })
   }))
+  marker.setStyle(new ol.style.Style({
+    image: new ol.style.Circle({
+      radius: 12,
+      stroke: new ol.style.Stroke({ color: [0,0,255] })
+    })
+  }))
+  features.pop()
   features.push(feature)
-  // create the source and layer for random features
+  features.push(marker)
   const source = new ol.source.Vector({
     features
   })

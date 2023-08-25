@@ -5,4 +5,13 @@ meter {
 .map {
     height: 400px;
     width: 100%;
-  }
+}
+
+#guage-place {
+    margin-top: 1em;
+    display: flex;
+}
+
+.ring {
+    flex-shrink: 0;
+}
