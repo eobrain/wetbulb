@@ -16,6 +16,9 @@ let sweatabilityAtPlace
 
 export const currentPlace = () => place
 
+let worstSweatability = 10000
+let worstPlace = null
+
 async function annealMove (annealT, scale, get, show) {
   const delta = randomElement(DELTAS)
   const [dLat, dLon] = delta
@@ -27,6 +30,10 @@ async function annealMove (annealT, scale, get, show) {
   const result = await get(latLon)
   if (!result) {
     return false
+  }
+  if (result.sweatability < worstSweatability) {
+    worstSweatability = result.sweatability
+    worstPlace = latLon
   }
   const dImprovement = sweatabilityAtPlace - result.sweatability
   const accept = Math.exp(dImprovement / annealT) > Math.random()
@@ -65,5 +72,9 @@ export async function anneal (get, show) {
         break
       }
     }
+    place.lat = worstPlace.lat
+    place.lon = worstPlace.lon
+    sweatabilityAtPlace = worstSweatability
+    await show(result)
   }
 }
