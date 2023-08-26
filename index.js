@@ -1,7 +1,7 @@
 import openweathermap from './openweathermap.js'
 import wetbulb from './wetbulb.js'
 import geocode from './geocode.js'
-import { anneal, currentPlace } from './optimize.js'
+import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
 /* global $place $temp $tempF $humidity $guage $sweatability */
@@ -85,4 +85,4 @@ async function show ({ name, temp, humidity, sweatability }) {
   $thermometer.value = temp
 }
 
-await anneal(get, show)
+await tabu(get, show)

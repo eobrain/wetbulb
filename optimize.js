@@ -1,3 +1,5 @@
+import sleep from './sleep.js'
+
 const randomElement = array => array[Math.floor(Math.random() * array.length)]
 
 const KM_IN_LAT_DEG = 0.008
@@ -6,14 +8,12 @@ const DSIN = D * Math.sqrt(3) / 2
 const DCOS = D / 2
 const DELTAS = [
   [-DSIN, -DCOS], [-DSIN, DCOS],
-  [0, -D], /* [0,0] */ [0, D],
+  [0, -D], /* [0,0] */[0, D],
   [DSIN, -DCOS], [DSIN, DCOS]
 ]
 
 // Corresponds to about 1 km at the equator
-// Using powers of two in the hope of avoiding
-// floating point noise
-const quantize = degree => Math.round(degree * 128) / 128
+const quantize = degree => Math.round(degree / KM_IN_LAT_DEG) * KM_IN_LAT_DEG
 
 const latMod = lon => lon > 90 ? lon - 180 : (lon < -90 ? lon + 180 : lon)
 const lonMod = lon => lon > 180 ? lon - 360 : (lon < -180 ? lon + 360 : lon)
@@ -26,13 +26,16 @@ export const currentPlace = () => place
 let worstSweatability = 10000
 let worstPlace = null
 
-async function annealMove (annealT, scale, get, show) {
-  const delta = randomElement(DELTAS)
+const plus = (ll, delta, scale) => {
   const [dLat, dLon] = delta
-  const latLon = {
-    lat: quantize(latMod(place.lat + dLat * scale)),
-    lon: quantize(lonMod(place.lon + dLon * scale))
+  return {
+    lat: quantize(latMod(ll.lat + dLat * scale)),
+    lon: quantize(lonMod(ll.lon + dLon * scale))
   }
+}
+
+async function annealMove (annealT, scale, get, show) {
+  const latLon = plus(place, randomElement(DELTAS), scale)
 
   const result = await get(latLon)
   if (!result) {
@@ -54,7 +57,40 @@ async function annealMove (annealT, scale, get, show) {
   return false
 }
 
-const sleep = (delayMs) => new Promise((resolve) => setTimeout(resolve, delayMs))
+const visited = new Set()
+
+async function tabuMove (scale, get, show) {
+  let lowestResult = { sweatability: 10000 }
+  let lowestPlace
+
+  for (const delta of DELTAS) {
+    const latLon = plus(place, delta, scale)
+    if (visited.has(JSON.stringify(latLon))) {
+      continue
+    }
+    const result = await get(latLon)
+    if (!result) {
+      continue
+    }
+    if (result.sweatability < lowestResult.sweatability) {
+      lowestResult = result
+      lowestPlace = latLon
+    }
+  }
+  if (!lowestPlace) {
+    return false
+  }
+  if (lowestResult.sweatability < worstSweatability) {
+    worstSweatability = lowestResult.sweatability
+    worstPlace = lowestPlace
+  }
+  place.lat = lowestPlace.lat
+  place.lon = lowestPlace.lon
+  sweatabilityAtPlace = lowestResult.sweatability
+  await show(lowestResult)
+  visited.add(JSON.stringify(place))
+  return true
+}
 
 const K = 10
 
@@ -88,6 +124,20 @@ export async function anneal (get, show) {
         await sleep(100)
       }
       if (!anyAccept) {
+        break
+      }
+    }
+    moveToWorst(get, show)
+  }
+}
+
+export async function tabu (get, show) {
+  await randomStart(get, show)
+
+  for (let scale = 8192; scale >= 1; scale /= 2) {
+    for (let i = 0; i < 20; ++i) {
+      await sleep(1000)
+      if (!(await tabuMove(scale, get, show))) {
         break
       }
     }
