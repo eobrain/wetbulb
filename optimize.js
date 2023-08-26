@@ -2,11 +2,16 @@ const randomElement = array => array[Math.floor(Math.random() * array.length)]
 
 const KM_IN_LAT_DEG = 0.008
 const D = KM_IN_LAT_DEG
+const DSIN = D * Math.sqrt(3) / 2
+const DCOS = D / 2
 const DELTAS = [
-  [-D, -D], [-D, 0], [-D, D],
-  [0, -D], [0, D],
-  [D, -D], [D, 0], [D, D]
+  [-DSIN, -DCOS], [-DSIN, DCOS],
+  [0, -D], /* [0,0] */ [0, D],
+  [DSIN, -DCOS], [DSIN, DCOS]
 ]
+
+// Corresponds to about 1 km at the equater
+const quantize = degree => Math.round(degree * 111) / 111
 
 const latMod = lon => lon > 90 ? lon - 180 : (lon < -90 ? lon + 180 : lon)
 const lonMod = lon => lon > 180 ? lon - 360 : (lon < -180 ? lon + 360 : lon)
@@ -23,8 +28,8 @@ async function annealMove (annealT, scale, get, show) {
   const delta = randomElement(DELTAS)
   const [dLat, dLon] = delta
   const latLon = {
-    lat: latMod(place.lat + dLat * scale),
-    lon: lonMod(place.lon + dLon * scale)
+    lat: quantize(latMod(place.lat + dLat * scale)),
+    lon: quantize(lonMod(place.lon + dLon * scale))
   }
 
   const result = await get(latLon)
@@ -54,8 +59,8 @@ const K = 10
 async function randomStart (get, show) {
   let result
   while (!result) {
-    place.lat = Math.random() * 180 - 90
-    place.lon = Math.random() * 360 - 180
+    place.lat = quantize(Math.random() * 180 - 90)
+    place.lon = quantize(Math.random() * 360 - 180)
     result = await get(place)
   }
   sweatabilityAtPlace = result.sweatability
