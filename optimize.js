@@ -42,6 +42,8 @@ async function annealMove (annealT, scale, get, show) {
 
 const sleep = (delayMs) => new Promise((resolve) => setTimeout(resolve, delayMs))
 
+const K = 10
+
 export async function anneal (get, show) {
   let result
   while (!result) {
@@ -53,9 +55,15 @@ export async function anneal (get, show) {
   await show(result)
 
   for (let scale = 8192; scale >= 1; scale /= 2) {
-    for (let annealT = 5; annealT >= 0.01; annealT *= 0.9) {
-      await annealMove(annealT, scale, get, show)
-      await sleep(200)
+    for (let annealT = 1; ; annealT *= 0.99) {
+      let anyAccept = false
+      for (let i = 0; i < K; ++i) {
+        anyAccept = anyAccept || await annealMove(annealT, scale, get, show)
+        await sleep(100)
+      }
+      if (!anyAccept) {
+        break
+      }
     }
   }
 }
