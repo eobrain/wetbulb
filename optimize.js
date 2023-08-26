@@ -51,7 +51,7 @@ const sleep = (delayMs) => new Promise((resolve) => setTimeout(resolve, delayMs)
 
 const K = 10
 
-export async function anneal (get, show) {
+async function randomStart (get, show) {
   let result
   while (!result) {
     place.lat = Math.random() * 180 - 90
@@ -60,6 +60,10 @@ export async function anneal (get, show) {
   }
   sweatabilityAtPlace = result.sweatability
   await show(result)
+}
+
+export async function anneal (get, show) {
+  await randomStart(get, show)
 
   for (let scale = 8192; scale >= 1; scale /= 2) {
     for (let annealT = 1; ; annealT *= 0.99) {
@@ -75,6 +79,7 @@ export async function anneal (get, show) {
     place.lat = worstPlace.lat
     place.lon = worstPlace.lon
     sweatabilityAtPlace = worstSweatability
-    await show(result)
+    const worstResult = await get(worstPlace)
+    await show(worstResult)
   }
 }
