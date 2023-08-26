@@ -10,8 +10,10 @@ const DELTAS = [
   [DSIN, -DCOS], [DSIN, DCOS]
 ]
 
-// Corresponds to about 1 km at the equater
-const quantize = degree => Math.round(degree * 111) / 111
+// Corresponds to about 1 km at the equator
+// Using powers of two in the hope of avoiding
+// floating point noise
+const quantize = degree => Math.round(degree * 128) / 128
 
 const latMod = lon => lon > 90 ? lon - 180 : (lon < -90 ? lon + 180 : lon)
 const lonMod = lon => lon > 180 ? lon - 360 : (lon < -180 ? lon + 360 : lon)
