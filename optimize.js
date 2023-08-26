@@ -69,6 +69,14 @@ async function randomStart (get, show) {
   await show(result)
 }
 
+async function moveToWorst (get, show) {
+  place.lat = worstPlace.lat
+  place.lon = worstPlace.lon
+  sweatabilityAtPlace = worstSweatability
+  const worstResult = await get(worstPlace)
+  await show(worstResult)
+}
+
 export async function anneal (get, show) {
   await randomStart(get, show)
 
@@ -83,10 +91,6 @@ export async function anneal (get, show) {
         break
       }
     }
-    place.lat = worstPlace.lat
-    place.lon = worstPlace.lon
-    sweatabilityAtPlace = worstSweatability
-    const worstResult = await get(worstPlace)
-    await show(worstResult)
+    moveToWorst(get, show)
   }
 }
