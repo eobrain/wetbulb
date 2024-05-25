@@ -136,7 +136,7 @@ export async function tabu (get, show) {
 
   for (let scale = 8192; scale >= 1; scale /= 2) {
     for (let i = 0; i < 20; ++i) {
-      await sleep(1000)
+      // await sleep(1000)
       if (!(await tabuMove(scale, get, show))) {
         break
       }

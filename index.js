@@ -1,6 +1,6 @@
 import openweathermap from './openweathermap.js'
 import wetbulb from './wetbulb.js'
-import geocode from './geocode.js'
+// import geocode from './geocode.js'
 import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
@@ -14,12 +14,16 @@ const MAX_S = 32
 const MIN_S = 0
 
 const uncachedGet = async (location) => {
-  const name = await geocode(location)
-  if (!name) {
+  // const name = await geocode(location)
+  // if (!name) {
+  //  return undefined
+  // }
+
+  const { name, main } = await openweathermap(location)
+
+  if (name.match(/^[0-9,.-]*$/)) {
     return undefined
   }
-
-  const { main } = await openweathermap(location)
 
   const { temp, humidity } = main
 
