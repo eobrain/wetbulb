@@ -2,7 +2,7 @@ import openweathermap from './openweathermap.js'
 import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
-/* global $place $temp $tempF $humidity $guage $wetbulb */
+/* global $place $temp $feelsLike $humidity $guage $wetbulb */
 
 const MAX_WB = 37
 const MIN_WB = 5
@@ -17,9 +17,9 @@ const uncachedGet = async (location) => {
   //  return undefined
   // }
 
-  const { temp, humidity, wetbulb } = main
+  const { temp, humidity, feels_like: feelsLike, wetbulb } = main
 
-  return { name, description, temp, humidity, wetbulb }
+  return { name, description, temp, humidity, feelsLike, wetbulb }
 }
 
 const cache = new Map()
@@ -43,6 +43,8 @@ const get = async (location) => {
 
 const mapUrl = ({ lat, lon }) => `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
 
+// const farenheit = (celsius) => celsius * 9 / 5 + 32
+
 function guageVariables (wetbulb) {
   if (wetbulb > MAX_WB) {
     wetbulb = MAX_WB
@@ -61,13 +63,13 @@ function guageVariables (wetbulb) {
   return { deg, x, y }
 }
 
-async function show ({ name, description, temp, humidity, wetbulb }) {
+async function show ({ name, description, temp, humidity, feelsLike, wetbulb }) {
   const place = currentPlace()
   drawDot(place, wetbulb, MIN_WB, MAX_WB)
   $place.innerText = (name || `${place.lat},${place.lon}`) + ' ' + description
   $place.href = mapUrl(place)
   $temp.innerText = Math.round(temp)
-  $tempF.innerText = Math.round(temp * 9 / 5 + 32)
+  $feelsLike.innerText = Math.round(feelsLike)
   $humidity.innerText = Math.round(humidity)
   const { deg, x, y } = guageVariables(wetbulb)
   $guage.style.setProperty('--pointerdeg', `${deg}deg`)
