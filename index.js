@@ -2,13 +2,13 @@ import openweathermap from './openweathermap.js'
 import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
-/* global $place $temp $feelsLike $humidity $guage $wetbulb */
+/* global $place $temp $feelsLike $humidity $guage $wetbulb $when $weather $map $about */
 
 const MAX_WB = 37
 const MIN_WB = 5
 
 const uncachedGet = async (location) => {
-  const { name, population, description, main } = await openweathermap(location)
+  const { name, country, date, weather, population, description, main } = await openweathermap(location)
 
   if (!name || population === 0) {
     return undefined
@@ -19,7 +19,7 @@ const uncachedGet = async (location) => {
 
   const { temp, humidity, feels_like: feelsLike, wetbulb } = main
 
-  return { name, description, temp, humidity, feelsLike, wetbulb }
+  return { name, country, date, weather, description, temp, humidity, feelsLike, wetbulb }
 }
 
 const cache = new Map()
@@ -41,7 +41,10 @@ const get = async (location) => {
   return result
 }
 
-const mapUrl = ({ lat, lon }) => `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
+const mapUrl = ({ lat, lon }) =>
+ `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
+const aboutUrl = (name, country) =>
+ `https://www.google.com/search?q=%22${encodeURIComponent(name)}%22+${encodeURIComponent(country)}+excessive+heat`
 
 // const farenheit = (celsius) => celsius * 9 / 5 + 32
 
@@ -63,11 +66,14 @@ function guageVariables (wetbulb) {
   return { deg, x, y }
 }
 
-async function show ({ name, description, temp, humidity, feelsLike, wetbulb }) {
+async function show ({ name, country, date, weather, description, temp, humidity, feelsLike, wetbulb }) {
   const place = currentPlace()
   drawDot(place, wetbulb, MIN_WB, MAX_WB)
-  $place.innerText = (name || `${place.lat},${place.lon}`) + ' ' + description
-  $place.href = mapUrl(place)
+  $place.innerText = (name || `${place.lat},${place.lon}`) + ', ' + country
+  $map.href = mapUrl(place)
+  $about.href = aboutUrl(name, country)
+  $when.innerText = date.toDateString()
+  $weather.innerText = weather
   $temp.innerText = Math.round(temp)
   $feelsLike.innerText = Math.round(feelsLike)
   $humidity.innerText = Math.round(humidity)
