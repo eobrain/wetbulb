@@ -9,8 +9,9 @@ const cached = async ({ lat, lon }) => {
 export default async ({ lat, lon }) => {
   const result = await cached({ lat, lon })
   const name = result.city.name
-  const description = `${result.city.country} population ${result.city.population}`
+  const population = result.city.population
+  const description = `${result.city.country} ${result.list[0].dt_txt} ${result.list[0].weather[0].description}`
   const main = result.list[0].main
   main.wetbulb = wetbulb(main.temp, main.humidity)
-  return { name, description, main }
+  return { name, population, description, main }
 }

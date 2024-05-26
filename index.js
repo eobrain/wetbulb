@@ -8,8 +8,11 @@ const MAX_WB = 37
 const MIN_WB = 5
 
 const uncachedGet = async (location) => {
-  const { name, description, main } = await openweathermap(location)
+  const { name, population, description, main } = await openweathermap(location)
 
+  if (!name || population === 0) {
+    return undefined
+  }
   // if (name.match(/^[0-9,.-]*$/)) {
   //  return undefined
   // }
