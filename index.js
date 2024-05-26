@@ -1,6 +1,4 @@
 import openweathermap from './openweathermap.js'
-import wetbulb from './wetbulb.js'
-// import geocode from './geocode.js'
 import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
@@ -14,23 +12,16 @@ const MAX_S = 32
 const MIN_S = 0
 
 const uncachedGet = async (location) => {
-  // const name = await geocode(location)
-  // if (!name) {
-  //  return undefined
-  // }
-
-  const { name, main } = await openweathermap(location)
+  const { name, description, main } = await openweathermap(location)
 
   if (name.match(/^[0-9,.-]*$/)) {
     return undefined
   }
 
-  const { temp, humidity } = main
+  const { temp, humidity, wetBulbTemp } = main
 
-  const wetBulbTempC = wetbulb(temp, humidity)
-
-  const sweatability = HUMAN_BODY_TEMP_C - wetBulbTempC
-  return { name, temp, humidity, sweatability }
+  const sweatability = HUMAN_BODY_TEMP_C - wetBulbTemp
+  return { name, description, temp, humidity, sweatability }
 }
 
 const cache = new Map()
@@ -72,10 +63,10 @@ function guageVariables (sweatability) {
   return { deg, x, y }
 }
 
-async function show ({ name, temp, humidity, sweatability }) {
+async function show ({ name, description, temp, humidity, sweatability }) {
   const place = currentPlace()
   drawDot(place, sweatability, MIN_S, MAX_S)
-  $place.innerText = name || `${place.lat},${place.lon}`
+  $place.innerText = (name || `${place.lat},${place.lon}`) + ' ' + description
   $place.href = mapUrl(place)
   $temp.innerText = Math.round(temp)
   $tempF.innerText = Math.round(temp * 9 / 5 + 32)
@@ -90,3 +81,4 @@ async function show ({ name, temp, humidity, sweatability }) {
 }
 
 await tabu(get, show)
+// await anneal(get, show)

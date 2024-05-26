@@ -1,4 +1,4 @@
-// const APIKEY = '4f1b762e294e38a1cc4d6770caf926dd'
+import wetbulb from './wetbulb.js'
 
 const cached = async ({ lat, lon }) => {
   // const result = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${APIKEY}`)
@@ -8,5 +8,9 @@ const cached = async ({ lat, lon }) => {
 
 export default async ({ lat, lon }) => {
   const result = await cached({ lat, lon })
-  return { name: result.city.name, main: result.list[0].main }
+  const name = result.city.name
+  const description = `${result.city.country} population ${result.city.population}`
+  const main = result.list[0].main
+  main.wetBulbTemp = wetbulb(main.temp, main.humidity)
+  return { name, description, main }
 }
