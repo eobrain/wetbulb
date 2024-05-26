@@ -2,26 +2,21 @@ import openweathermap from './openweathermap.js'
 import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
-/* global $place $temp $tempF $humidity $guage $sweatability */
-const $hygrometer = document.getElementById('hygrometer')
-const $thermometer = document.getElementById('thermometer')
+/* global $place $temp $tempF $humidity $guage $wetbulb */
 
-const HUMAN_BODY_TEMP_C = 37
-
-const MAX_S = 32
-const MIN_S = 0
+const MAX_WB = 37
+const MIN_WB = 5
 
 const uncachedGet = async (location) => {
   const { name, description, main } = await openweathermap(location)
 
-  if (name.match(/^[0-9,.-]*$/)) {
-    return undefined
-  }
+  // if (name.match(/^[0-9,.-]*$/)) {
+  //  return undefined
+  // }
 
-  const { temp, humidity, wetBulbTemp } = main
+  const { temp, humidity, wetbulb } = main
 
-  const sweatability = HUMAN_BODY_TEMP_C - wetBulbTemp
-  return { name, description, temp, humidity, sweatability }
+  return { name, description, temp, humidity, wetbulb }
 }
 
 const cache = new Map()
@@ -45,39 +40,37 @@ const get = async (location) => {
 
 const mapUrl = ({ lat, lon }) => `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
 
-function guageVariables (sweatability) {
-  if (sweatability > MAX_S) {
-    sweatability = MAX_S
+function guageVariables (wetbulb) {
+  if (wetbulb > MAX_WB) {
+    wetbulb = MAX_WB
   }
-  if (sweatability < MIN_S) {
-    sweatability = MIN_S
+  if (wetbulb < MIN_WB) {
+    wetbulb = MIN_WB
   }
   const MAX_DEG = 135
   const MIN_DEG = -135
   const R = 92.5 / 2
   const X0 = 41
   const Y0 = R
-  const deg = MIN_DEG + (MAX_DEG - MIN_DEG) * (sweatability - MIN_S) / (MAX_S - MIN_S)
+  const deg = MIN_DEG + (MAX_DEG - MIN_DEG) * (wetbulb - MIN_WB) / (MAX_WB - MIN_WB)
   const x = X0 - R * Math.cos(deg * Math.PI / 180)
   const y = Y0 + R * Math.sin(deg * Math.PI / 180)
   return { deg, x, y }
 }
 
-async function show ({ name, description, temp, humidity, sweatability }) {
+async function show ({ name, description, temp, humidity, wetbulb }) {
   const place = currentPlace()
-  drawDot(place, sweatability, MIN_S, MAX_S)
+  drawDot(place, wetbulb, MIN_WB, MAX_WB)
   $place.innerText = (name || `${place.lat},${place.lon}`) + ' ' + description
   $place.href = mapUrl(place)
   $temp.innerText = Math.round(temp)
   $tempF.innerText = Math.round(temp * 9 / 5 + 32)
   $humidity.innerText = Math.round(humidity)
-  const { deg, x, y } = guageVariables(sweatability)
+  const { deg, x, y } = guageVariables(wetbulb)
   $guage.style.setProperty('--pointerdeg', `${deg}deg`)
   $guage.style.setProperty('--pointertop', `${x}%`)
   $guage.style.setProperty('--pointerleft', `${y}%`)
-  $sweatability.innerText = Math.round(sweatability)
-  $hygrometer.value = humidity
-  $thermometer.value = temp
+  $wetbulb.innerText = Math.round(wetbulb)
 }
 
 await tabu(get, show)

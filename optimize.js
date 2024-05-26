@@ -1,4 +1,4 @@
-import sleep from './sleep.js'
+// import sleep from './sleep.js'
 
 const randomElement = array => array[Math.floor(Math.random() * array.length)]
 
@@ -19,11 +19,11 @@ const latMod = lon => lon > 90 ? lon - 180 : (lon < -90 ? lon + 180 : lon)
 const lonMod = lon => lon > 180 ? lon - 360 : (lon < -180 ? lon + 360 : lon)
 
 const place = {}
-let sweatabilityAtPlace
+let wetbulbAtPlace
 
 export const currentPlace = () => place
 
-let worstSweatability = 10000
+let worstWetbulb = -10000
 let worstPlace = null
 
 const plus = (ll, delta, scale) => {
@@ -41,16 +41,16 @@ async function annealMove (annealT, scale, get, show) {
   if (!result) {
     return false
   }
-  if (result.sweatability < worstSweatability) {
-    worstSweatability = result.sweatability
+  if (result.wetbulb > worstWetbulb) {
+    worstWetbulb = result.wetbulb
     worstPlace = latLon
   }
-  const dImprovement = sweatabilityAtPlace - result.sweatability
+  const dImprovement = result.wetbulb - wetbulbAtPlace
   const accept = Math.exp(dImprovement / annealT) > Math.random()
   if (accept) {
     place.lat = latLon.lat
     place.lon = latLon.lon
-    sweatabilityAtPlace = result.sweatability
+    wetbulbAtPlace = result.wetbulb
     await show(result)
     return true
   }
@@ -60,8 +60,8 @@ async function annealMove (annealT, scale, get, show) {
 const visited = new Set()
 
 async function tabuMove (scale, get, show) {
-  let lowestResult = { sweatability: 10000 }
-  let lowestPlace
+  let highestResult = { wetbulb: -10000 }
+  let highestPlace
 
   for (const delta of DELTAS) {
     const latLon = plus(place, delta, scale)
@@ -72,22 +72,22 @@ async function tabuMove (scale, get, show) {
     if (!result) {
       continue
     }
-    if (result.sweatability < lowestResult.sweatability) {
-      lowestResult = result
-      lowestPlace = latLon
+    if (result.wetbulb > highestResult.wetbulb) {
+      highestResult = result
+      highestPlace = latLon
     }
   }
-  if (!lowestPlace) {
+  if (!highestPlace) {
     return false
   }
-  if (lowestResult.sweatability < worstSweatability) {
-    worstSweatability = lowestResult.sweatability
-    worstPlace = lowestPlace
+  if (highestResult.wetbulb > worstWetbulb) {
+    worstWetbulb = highestResult.wetbulb
+    worstPlace = highestPlace
   }
-  place.lat = lowestPlace.lat
-  place.lon = lowestPlace.lon
-  sweatabilityAtPlace = lowestResult.sweatability
-  await show(lowestResult)
+  place.lat = highestPlace.lat
+  place.lon = highestPlace.lon
+  wetbulbAtPlace = highestResult.wetbulb
+  await show(highestResult)
   visited.add(JSON.stringify(place))
   return true
 }
@@ -101,14 +101,14 @@ async function randomStart (get, show) {
     place.lon = quantize(Math.random() * 360 - 180)
     result = await get(place)
   }
-  sweatabilityAtPlace = result.sweatability
+  wetbulbAtPlace = result.wetbulb
   await show(result)
 }
 
 async function moveToWorst (get, show) {
   place.lat = worstPlace.lat
   place.lon = worstPlace.lon
-  sweatabilityAtPlace = worstSweatability
+  wetbulbAtPlace = worstWetbulb
   const worstResult = await get(worstPlace)
   await show(worstResult)
 }
@@ -116,12 +116,12 @@ async function moveToWorst (get, show) {
 export async function anneal (get, show) {
   await randomStart(get, show)
 
-  for (let scale = 8192; scale >= 1; scale /= 2) {
-    for (let annealT = 1; ; annealT *= 0.99) {
+  for (let scale = 16384; scale >= 1; scale /= 2) {
+    for (let annealT = 10; ; annealT *= 0.99) {
       let anyAccept = false
       for (let i = 0; i < K; ++i) {
         anyAccept = anyAccept || await annealMove(annealT, scale, get, show)
-        await sleep(100)
+        // await sleep(100)
       }
       if (!anyAccept) {
         break
@@ -135,7 +135,7 @@ export async function tabu (get, show) {
   await randomStart(get, show)
 
   for (let scale = 8192; scale >= 1; scale /= 2) {
-    for (let i = 0; i < 100; ++i) {
+    for (let i = 0; i < 10; ++i) {
       // await sleep(1000)
       if (!(await tabuMove(scale, get, show))) {
         break

@@ -7,7 +7,8 @@
     --pointerdeg: -90deg;
     width: 50vmin;
     height: 50vmin;
-    background-image: radial-gradient(red 0, red 50%, transparent 50%, transparent 100%), radial-gradient(green 0, green 50%, transparent 50%, transparent 100%), radial-gradient(white 0, white 60%, transparent 60%), conic-gradient(orange 0, green 130deg, white 130deg, white 230deg, red 230deg, orange 360deg);
+  /*background-image: radial-gradient(red 0, red 50%, transparent 50%, transparent 100%), radial-gradient(green 0, green 50%, transparent 50%, transparent 100%), radial-gradient(white 0, white 60%, transparent 60%), conic-gradient(orange 0, green 130deg, white 130deg, white 230deg, red 230deg, orange 360deg);*/
+    background-image: radial-gradient(green 0, #008000 50%, transparent 50%, transparent 100%), radial-gradient(red 0, red 50%, transparent 50%, transparent 100%), radial-gradient(white 0, white 60%, transparent 60%), conic-gradient(orange 0, red 130deg, white 130deg, white 230deg, green 230deg, orange 360deg);
     background-size: 11% 11%, 11% 11%, 100% 100%, 100% 100%;
     background-repeat: no-repeat;
     background-position: 9.2% 82.3%, 90.8% 82.3%, center center, center center;
