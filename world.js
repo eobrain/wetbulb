@@ -15,8 +15,8 @@ const map = new ol.Map({
 
 const hexByte = n => ('00' + n.toString(16).toUpperCase()).slice(-2)
 
-const color = (sweatability, minS, maxS) => {
-  let twiceByte = Math.trunc(0x200 * (sweatability - minS) / (maxS - minS))
+const color = (wetbulb, minWB, maxWB) => {
+  let twiceByte = Math.trunc(0x200 * (wetbulb - minWB) / (maxWB - minWB))
   if (twiceByte < 0) {
     twiceByte = 0
   }
@@ -26,9 +26,9 @@ const color = (sweatability, minS, maxS) => {
   let red = 0xFF
   let green = 0xFF
   if (twiceByte <= 0xFF) {
-    green = twiceByte
+    red = twiceByte
   } else {
-    red = 0x200 - twiceByte
+    green = 0x200 - twiceByte
   }
   return '#' + hexByte(red) + hexByte(green) + '00'
 }
@@ -37,7 +37,7 @@ const features = []
 
 let vectorLayer
 
-export function drawDot ({ lat, lon }, sweatability, minS, maxS) {
+export function drawDot ({ lat, lon }, wetbulb, minWB, maxWB) {
   const feature = new ol.Feature({
     geometry: new ol.geom.Point(ol.proj.fromLonLat([
       lon, lat
@@ -51,13 +51,13 @@ export function drawDot ({ lat, lon }, sweatability, minS, maxS) {
   feature.setStyle(new ol.style.Style({
     image: new ol.style.Circle({
       radius: 10,
-      fill: new ol.style.Fill({ color: color(sweatability, minS, maxS) })
+      fill: new ol.style.Fill({ color: color(wetbulb, minWB, maxWB) })
     })
   }))
   marker.setStyle(new ol.style.Style({
     image: new ol.style.Circle({
       radius: 12,
-      stroke: new ol.style.Stroke({ color: [0,0,255] })
+      stroke: new ol.style.Stroke({ color: [0, 0, 255] })
     })
   }))
   features.pop()

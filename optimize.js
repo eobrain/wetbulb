@@ -1,63 +1,146 @@
+// import sleep from './sleep.js'
+
 const randomElement = array => array[Math.floor(Math.random() * array.length)]
 
 const KM_IN_LAT_DEG = 0.008
 const D = KM_IN_LAT_DEG
+const DSIN = D * Math.sqrt(3) / 2
+const DCOS = D / 2
 const DELTAS = [
-  [-D, -D], [-D, 0], [-D, D],
-  [0, -D], [0, D],
-  [D, -D], [D, 0], [D, D]
+  [-DSIN, -DCOS], [-DSIN, DCOS],
+  [0, -D], /* [0,0] */[0, D],
+  [DSIN, -DCOS], [DSIN, DCOS]
 ]
+
+// Corresponds to about 1 km at the equator
+const quantize = degree => Math.round(degree / KM_IN_LAT_DEG) * KM_IN_LAT_DEG
 
 const latMod = lon => lon > 90 ? lon - 180 : (lon < -90 ? lon + 180 : lon)
 const lonMod = lon => lon > 180 ? lon - 360 : (lon < -180 ? lon + 360 : lon)
 
 const place = {}
-let sweatabilityAtPlace
+let wetbulbAtPlace
 
 export const currentPlace = () => place
 
-async function annealMove (annealT, scale, get, show) {
-  const delta = randomElement(DELTAS)
+let worstWetbulb = -10000
+let worstPlace = null
+
+const plus = (ll, delta, scale) => {
   const [dLat, dLon] = delta
-  const latLon = {
-    lat: latMod(place.lat + dLat * scale),
-    lon: lonMod(place.lon + dLon * scale)
+  return {
+    lat: quantize(latMod(ll.lat + dLat * scale)),
+    lon: quantize(lonMod(ll.lon + dLon * scale))
   }
+}
+
+async function annealMove (annealT, scale, get, show) {
+  const latLon = plus(place, randomElement(DELTAS), scale)
 
   const result = await get(latLon)
   if (!result) {
     return false
   }
-  const dImprovement = sweatabilityAtPlace - result.sweatability
+  if (result.wetbulb > worstWetbulb) {
+    worstWetbulb = result.wetbulb
+    worstPlace = latLon
+  }
+  const dImprovement = result.wetbulb - wetbulbAtPlace
   const accept = Math.exp(dImprovement / annealT) > Math.random()
   if (accept) {
     place.lat = latLon.lat
     place.lon = latLon.lon
-    sweatabilityAtPlace = result.sweatability
+    wetbulbAtPlace = result.wetbulb
     await show(result)
     return true
   }
   return false
 }
 
-const sleep = (delayMs) => new Promise((resolve) => setTimeout(resolve, delayMs))
+const visited = new Set()
 
-export async function anneal (get, show) {
+async function tabuMove (scale, get, show) {
+  let highestResult = { wetbulb: -10000 }
+  let highestPlace
+
+  for (const delta of DELTAS) {
+    const latLon = plus(place, delta, scale)
+    if (visited.has(JSON.stringify(latLon))) {
+      continue
+    }
+    const result = await get(latLon)
+    if (!result) {
+      continue
+    }
+    if (result.wetbulb > highestResult.wetbulb) {
+      highestResult = result
+      highestPlace = latLon
+    }
+  }
+  if (!highestPlace) {
+    return false
+  }
+  if (highestResult.wetbulb > worstWetbulb) {
+    worstWetbulb = highestResult.wetbulb
+    worstPlace = highestPlace
+  }
+  place.lat = highestPlace.lat
+  place.lon = highestPlace.lon
+  wetbulbAtPlace = highestResult.wetbulb
+  await show(highestResult)
+  visited.add(JSON.stringify(place))
+  return true
+}
+
+const K = 10
+
+async function randomStart (get, show) {
   let result
   while (!result) {
-    place.lat = Math.random() * 180 - 90
-    place.lon = Math.random() * 360 - 180
+    place.lat = quantize(Math.random() * 180 - 90)
+    place.lon = quantize(Math.random() * 360 - 180)
     result = await get(place)
   }
-  sweatabilityAtPlace = result.sweatability
+  wetbulbAtPlace = result.wetbulb
   await show(result)
+}
+
+async function moveToWorst (get, show) {
+  place.lat = worstPlace.lat
+  place.lon = worstPlace.lon
+  wetbulbAtPlace = worstWetbulb
+  const worstResult = await get(worstPlace)
+  await show(worstResult)
+}
+
+export async function anneal (get, show) {
+  await randomStart(get, show)
+
+  for (let scale = 16384; scale >= 1; scale /= 2) {
+    for (let annealT = 10; ; annealT *= 0.99) {
+      let anyAccept = false
+      for (let i = 0; i < K; ++i) {
+        anyAccept = anyAccept || await annealMove(annealT, scale, get, show)
+        // await sleep(100)
+      }
+      if (!anyAccept) {
+        break
+      }
+    }
+    moveToWorst(get, show)
+  }
+}
+
+export async function tabu (get, show) {
+  await randomStart(get, show)
 
   for (let scale = 8192; scale >= 1; scale /= 2) {
-    const annealT = 5 * (scale / 8192) ** 0.5
-    console.log({ scale, annealT })
-    for (let i = 0; i < 100; ++i) {
-      await annealMove(annealT, scale, get, show)
-      await sleep(200)
+    for (let i = 0; i < 10; ++i) {
+      // await sleep(1000)
+      if (!(await tabuMove(scale, get, show))) {
+        break
+      }
     }
+    moveToWorst(get, show)
   }
 }
