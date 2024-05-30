@@ -3,7 +3,8 @@ import wetbulb from './wetbulb.js'
 const cached = async ({ lat, lon }) => {
   // const result = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${APIKEY}`)
   // const result = await fetch(`https://eamonn.org:1443/api?lat=${lat}&lon=${lon}`)
-  const result = await fetch(`https://corolla.tailbcc5.ts.net:1443/api?lat=${lat}&lon=${lon}`)
+  //const result = await fetch(`https://corolla.tailbcc5.ts.net:1443/api?lat=${lat}&lon=${lon}`)
+  const result = await fetch(`https://weather-424404.uc.r.appspot.com/?lat=${lat}&lon=${lon}`)
   return await result.json()
 }
 
