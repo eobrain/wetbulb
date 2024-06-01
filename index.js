@@ -48,13 +48,17 @@ const aboutUrl = (name, country) =>
 
 // const farenheit = (celsius) => celsius * 9 / 5 + 32
 
+const HOUR = 1000 * 60 * 60
+
+const relTime = date => Math.round((date.valueOf() - Date.now()) / HOUR) + ' hours'
+
 async function show ({ name, country, date, weather, description, temp, humidity, feelsLike, wetbulb }) {
   const place = currentPlace()
   drawDot(place, wetbulb, MIN_WB, MAX_WB)
   $place.innerText = (name || `${place.lat},${place.lon}`) + ', ' + country
   $map.href = mapUrl(place)
   $about.href = aboutUrl(name, country)
-  $when.innerText = date.toDateString()
+  $when.innerText = relTime(date)
   $weather.innerText = weather
   $temp.innerText = Math.round(temp)
   $feelsLike.innerText = Math.round(feelsLike)

@@ -93,12 +93,15 @@ async function tabuMove (scale, get, show) {
 }
 
 const K = 10
+const START_QUANTIZATION_DEG = 20
+const startQuantization = degree =>
+  START_QUANTIZATION_DEG * Math.round(degree / START_QUANTIZATION_DEG)
 
 async function randomStart (get, show) {
   let result
   while (!result) {
-    place.lat = Math.round(Math.random() * 180 - 90)
-    place.lon = Math.round(Math.random() * 360 - 180)
+    place.lat = startQuantization(Math.random() * 180 - 90)
+    place.lon = startQuantization(Math.random() * 360 - 180)
     result = await get(place)
   }
   wetbulbAtPlace = result.wetbulb

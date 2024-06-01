@@ -10,6 +10,11 @@ const cached = async ({ lat, lon }) => {
 
 export default async ({ lat, lon }) => {
   const result = await cached({ lat, lon })
+  const { cod } = result
+  if (Number(cod) !== 200) {
+    console.log('Error fetching weather data for ', { lat, lon }, result)
+    return { name: undefined }
+  }
   const forecasts = result.list.map(f => { f.main.wetbulb = wetbulb(f.main.temp, f.main.humidity); return f })
   const worstForecast = forecasts.reduce((worstF, f) =>
     worstF.main.wetbulb > f.main.wetbulb ? worstF : f)
