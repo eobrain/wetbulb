@@ -18,13 +18,8 @@
     <article>
         <h1>Upcoming Heatwaves</h1>
         <section>
-            <figure>
-                <div id="map" class="map"></div>
-            </figure>
-        </section>
-        <section>
             <p><span id="$when"></span> from now
-                in <a id="$map" target="_blank"><span id="$place"></span></a>
+                in <a id="$googleMap" target="_blank"><span id="$place"></span></a>
                 the wet-bulb temperature will be
                 <a id="$about" target="_blank"><big><span id="$wetbulb"></span>°C</big></a>.
             </p>
@@ -32,6 +27,11 @@
                 the humidity will be <span id="$humidity"></span>%,
                 and it will feel like <span id="$feelsLike"></span>°C.
                 There will will be <span id="$weather"></span>.</aside>
+        </section>
+        <section>
+            <figure>
+                <div id="map" class="map"></div>
+            </figure>
         </section>
         <section>
             <p>

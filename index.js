@@ -2,7 +2,7 @@ import openweathermap from './openweathermap.js'
 import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
-/* global $place $temp $feelsLike $humidity $wetbulb $when $weather $map $about */
+/* global $place $temp $feelsLike $humidity $wetbulb $when $weather $googleMap $about */
 
 const MAX_WB = 37
 const MIN_WB = 5
@@ -56,7 +56,7 @@ async function show ({ name, country, date, weather, description, temp, humidity
   const place = currentPlace()
   drawDot(place, wetbulb, MIN_WB, MAX_WB)
   $place.innerText = (name || `${place.lat},${place.lon}`) + ', ' + country
-  $map.href = mapUrl(place)
+  $googleMap.href = mapUrl(place)
   $about.href = aboutUrl(name, country)
   $when.innerText = relTime(date)
   $weather.innerText = weather
