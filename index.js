@@ -2,7 +2,7 @@ import openweathermap from './openweathermap.js'
 import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
-/* global $place $temp $feelsLike $humidity $guage $wetbulb $when $weather $map $about */
+/* global $place $temp $feelsLike $humidity $wetbulb $when $weather $map $about */
 
 const MAX_WB = 37
 const MIN_WB = 5
@@ -48,24 +48,6 @@ const aboutUrl = (name, country) =>
 
 // const farenheit = (celsius) => celsius * 9 / 5 + 32
 
-function guageVariables (wetbulb) {
-  if (wetbulb > MAX_WB) {
-    wetbulb = MAX_WB
-  }
-  if (wetbulb < MIN_WB) {
-    wetbulb = MIN_WB
-  }
-  const MAX_DEG = 135
-  const MIN_DEG = -135
-  const R = 92.5 / 2
-  const X0 = 41
-  const Y0 = R
-  const deg = MIN_DEG + (MAX_DEG - MIN_DEG) * (wetbulb - MIN_WB) / (MAX_WB - MIN_WB)
-  const x = X0 - R * Math.cos(deg * Math.PI / 180)
-  const y = Y0 + R * Math.sin(deg * Math.PI / 180)
-  return { deg, x, y }
-}
-
 async function show ({ name, country, date, weather, description, temp, humidity, feelsLike, wetbulb }) {
   const place = currentPlace()
   drawDot(place, wetbulb, MIN_WB, MAX_WB)
@@ -77,10 +59,6 @@ async function show ({ name, country, date, weather, description, temp, humidity
   $temp.innerText = Math.round(temp)
   $feelsLike.innerText = Math.round(feelsLike)
   $humidity.innerText = Math.round(humidity)
-  const { deg, x, y } = guageVariables(wetbulb)
-  $guage.style.setProperty('--pointerdeg', `${deg}deg`)
-  $guage.style.setProperty('--pointertop', `${x}%`)
-  $guage.style.setProperty('--pointerleft', `${y}%`)
   $wetbulb.innerText = Math.round(wetbulb)
 }
 

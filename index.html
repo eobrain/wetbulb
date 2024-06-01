@@ -16,25 +16,26 @@
 
 <body>
     <div id="map" class="map"></div>
-    <div id="guage-place">
-
-        <div id="$guage" class="ring">
-            <div class="speed">
-                <div class="number">Wetbulb <span id="$wetbulb"></span>°C</div>
-                <div class="units">Actual <span id="$temp"></span>°C</div>
-                <div class="units">Feels like <span id="$feelsLike"></span>°C</div>
-                <div class="units">Humidity <span id="$humidity"></span>%</div>
-            </div>
-        </div>
-        <div>
-            <div><span id="$place"></span></div>
-            <div><span id="$when"></span></div>
-            <div><span id="$weather"></span></div>
-            <div><a id="$map" target="_blank">Map</a></div>
-            <div><a id="$about" target="_blank">About</a></div>
-        </div>
-    </div>
-
+    <table>
+        <tr>
+            <th>Where</th>
+            <th>When</th>
+            <th>Wetbulb</th>
+            <th>Actual</th>
+            <th>Feels like</th>
+            <th>Humidity</th>
+            <th>Weather</th>
+        </tr>
+        <tr>
+            <td><a id="$map" target="_blank"><span id="$place"></span></a></td>
+            <td><span id="$when"></span></td>
+            <td><span id="$wetbulb"></span>°C</td>
+            <td><span id="$temp"></span>°C</td>
+            <td><span id="$feelsLike"></span>°C</td>
+            <td><span id="$humidity"></span>°C</td>
+            <td><a id="$about" target="_blank"><span id="$weather"></span></a></td>
+        </tr>
+    </table>
     <p>
         The closer wetbulb temperature gets to human body temperature (37°C) the less you can sweat
         and so the closer you are to being killed by heat.

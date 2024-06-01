@@ -97,8 +97,8 @@ const K = 10
 async function randomStart (get, show) {
   let result
   while (!result) {
-    place.lat = quantize(Math.random() * 180 - 90)
-    place.lon = quantize(Math.random() * 360 - 180)
+    place.lat = Math.round(Math.random() * 180 - 90)
+    place.lon = Math.round(Math.random() * 360 - 180)
     result = await get(place)
   }
   wetbulbAtPlace = result.wetbulb
@@ -134,8 +134,8 @@ export async function anneal (get, show) {
 export async function tabu (get, show) {
   await randomStart(get, show)
 
-  for (let scale = 8192; scale >= 1; scale /= 2) {
-    for (let i = 0; i < 10; ++i) {
+  for (let scale = 512; scale >= 1; scale /= 2) {
+    for (let i = 0; i < 100; ++i) {
       // await sleep(1000)
       if (!(await tabuMove(scale, get, show))) {
         break
