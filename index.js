@@ -3,7 +3,8 @@ import countryNames from './country-names.js'
 import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
-/* global $place $temp $feelsLike $humidity $wetbulb $humanEffect
+/* global $place $temp $tempF $feelsLike $feelsLikeF
+   $humidity $wetbulb $wetbulbF $humanEffect
    $when $weather $googleMap $about */
 
 const MAX_WB = 37
@@ -48,7 +49,7 @@ const mapUrl = ({ lat, lon }) =>
 const aboutUrl = (name, country) =>
   `https://www.google.com/search?q=%22${encodeURIComponent(name)}%22+${encodeURIComponent(country)}+excessive+heat`
 
-// const farenheit = (celsius) => celsius * 9 / 5 + 32
+const farenheit = (celsius) => celsius * 9 / 5 + 32
 
 const HOUR = 1000 * 60 * 60
 
@@ -62,7 +63,7 @@ function humanEffect (wetbulb) {
     return 'is uncomfortable'
   }
   if (wetbulb < 31) {
-    return 'has killed tens of thousands in previous heatwaves'
+    return 'could kill many vulnerable people'
   }
   if (wetbulb < 35) {
     return 'makes it impossible to do physical labor'
@@ -79,11 +80,17 @@ async function show ({ name, country, date, weather, description, temp, humidity
   $about.href = aboutUrl(name, countryName)
   $when.innerText = relTime(date)
   $weather.innerText = weather
-  $temp.innerText = Math.round(temp)
-  $feelsLike.innerText = Math.round(feelsLike)
   $humidity.innerText = Math.round(humidity)
-  $wetbulb.innerText = Math.round(wetbulb)
   $humanEffect.innerText = humanEffect(wetbulb)
+
+  $temp.innerText = Math.round(temp)
+  $tempF.innerText = Math.round(farenheit(temp))
+
+  $feelsLike.innerText = Math.round(feelsLike)
+  $feelsLikeF.innerText = Math.round(farenheit(feelsLike))
+
+  $wetbulb.innerText = Math.round(wetbulb)
+  $wetbulbF.innerText = Math.round(farenheit(wetbulb))
 }
 
 while (true) {
