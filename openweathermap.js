@@ -1,4 +1,5 @@
 import wetbulb from './wetbulb.js'
+import sleep from './sleep.js'
 
 const cached = async ({ lat, lon }) => {
   // const result = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${APIKEY}`)
@@ -11,8 +12,12 @@ const cached = async ({ lat, lon }) => {
 export default async ({ lat, lon }) => {
   const result = await cached({ lat, lon })
   const { cod } = result
-  if (Number(cod) !== 200) {
+  const code = Number(cod)
+  if (code !== 200) {
     console.log('Error fetching weather data for ', { lat, lon }, result)
+    if (code === 429) { // Quota exceeded
+      await sleep(10000)
+    }
     return { name: undefined }
   }
   const forecasts = result.list.map(f => { f.main.wetbulb = wetbulb(f.main.temp, f.main.humidity); return f })

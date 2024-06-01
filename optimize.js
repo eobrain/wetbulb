@@ -1,4 +1,4 @@
-// import sleep from './sleep.js'
+import sleep from './sleep.js'
 
 const randomElement = array => array[Math.floor(Math.random() * array.length)]
 
@@ -109,6 +109,10 @@ async function randomStart (get, show) {
 }
 
 async function moveToWorst (get, show) {
+  if (!worstPlace) {
+    await sleep(1000)
+    return
+  }
   place.lat = worstPlace.lat
   place.lon = worstPlace.lon
   wetbulbAtPlace = worstWetbulb
@@ -145,5 +149,6 @@ export async function tabu (get, show) {
       }
     }
     moveToWorst(get, show)
+    await sleep(10000)
   }
 }
