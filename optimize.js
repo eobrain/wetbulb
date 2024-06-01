@@ -83,11 +83,11 @@ async function tabuMove (scale, get, show) {
   if (highestResult.wetbulb > worstWetbulb) {
     worstWetbulb = highestResult.wetbulb
     worstPlace = highestPlace
+    await show(highestResult)
   }
   place.lat = highestPlace.lat
   place.lon = highestPlace.lon
   wetbulbAtPlace = highestResult.wetbulb
-  await show(highestResult)
   visited.add(JSON.stringify(place))
   return true
 }

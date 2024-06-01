@@ -11,31 +11,27 @@
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/build/ol.js"></script>
     <script src="index.js" type="module"></script>
     <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="guage.css">
 </head>
 
 <body>
+    <h2>Upcoming Heatwaves</h2>
     <div id="map" class="map"></div>
-    <table>
-        <tr>
-            <th>Where</th>
-            <th>When</th>
-            <th>Wetbulb</th>
-            <th>Actual</th>
-            <th>Feels like</th>
-            <th>Humidity</th>
-            <th>Weather</th>
-        </tr>
-        <tr>
-            <td><a id="$map" target="_blank"><span id="$place"></span></a></td>
-            <td><span id="$when"></span></td>
-            <td><span id="$wetbulb"></span>°C</td>
-            <td><span id="$temp"></span>°C</td>
-            <td><span id="$feelsLike"></span>°C</td>
-            <td><span id="$humidity"></span>°C</td>
-            <td><a id="$about" target="_blank"><span id="$weather"></span></a></td>
-        </tr>
-    </table>
+    <div class="table">
+        <h2>Where</h2>
+        <h2>When</h2>
+        <h2>Wetbulb</h2>
+        <h2>Actual</h2>
+        <h2>Feels like</h2>
+        <h2>Humidity</h2>
+        <h2>Weather</h2>
+        <div><a id="$map" target="_blank"><span id="$place"></span></a></div>
+        <div><span id="$when"></span></div>
+        <div><span id="$wetbulb"></span>°C</div>
+        <div><span id="$temp"></span>°C</div>
+        <div><span id="$feelsLike"></span>°C</div>
+        <div><span id="$humidity"></span>%</div>
+        <div><a id="$about" target="_blank"><span id="$weather"></span></a></div>
+    </div>
     <p>
         The closer wetbulb temperature gets to human body temperature (37°C) the less you can sweat
         and so the closer you are to being killed by heat.
