@@ -42,9 +42,9 @@ const get = async (location) => {
 }
 
 const mapUrl = ({ lat, lon }) =>
- `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
+  `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
 const aboutUrl = (name, country) =>
- `https://www.google.com/search?q=%22${encodeURIComponent(name)}%22+${encodeURIComponent(country)}+excessive+heat`
+  `https://www.google.com/search?q=%22${encodeURIComponent(name)}%22+${encodeURIComponent(country)}+excessive+heat`
 
 // const farenheit = (celsius) => celsius * 9 / 5 + 32
 
@@ -62,5 +62,7 @@ async function show ({ name, country, date, weather, description, temp, humidity
   $wetbulb.innerText = Math.round(wetbulb)
 }
 
-await tabu(get, show)
+while (true) {
+  await tabu(get, show)
+}
 // await anneal(get, show)
