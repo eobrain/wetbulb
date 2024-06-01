@@ -8,8 +8,8 @@ const map = new ol.Map({
     })
   ],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-75, 35]),
-    zoom: 2
+    center: ol.proj.fromLonLat([0,0]),
+    zoom: 1
   })
 })
 
