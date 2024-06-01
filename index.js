@@ -1,8 +1,10 @@
 import openweathermap from './openweathermap.js'
+import countryNames from './country-names.js'
 import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
-/* global $place $temp $feelsLike $humidity $wetbulb $when $weather $googleMap $about */
+/* global $place $temp $feelsLike $humidity $wetbulb $humanEffect
+   $when $weather $googleMap $about */
 
 const MAX_WB = 37
 const MIN_WB = 5
@@ -52,18 +54,36 @@ const HOUR = 1000 * 60 * 60
 
 const relTime = date => Math.round((date.valueOf() - Date.now()) / HOUR) + ' hours'
 
+function humanEffect (wetbulb) {
+  if (wetbulb < 21) {
+    return 'is fine'
+  }
+  if (wetbulb < 28) {
+    return 'is uncomfortable'
+  }
+  if (wetbulb < 31) {
+    return 'has killed tens of thousands in previous heatwaves'
+  }
+  if (wetbulb < 35) {
+    return 'makes it impossible to do physical labor'
+  }
+  return 'will kill you'
+}
+
 async function show ({ name, country, date, weather, description, temp, humidity, feelsLike, wetbulb }) {
+  const countryName = countryNames[country] || country
   const place = currentPlace()
   drawDot(place, wetbulb, MIN_WB, MAX_WB)
-  $place.innerText = (name || `${place.lat},${place.lon}`) + ', ' + country
+  $place.innerText = (name || `${place.lat},${place.lon}`) + ', ' + countryName
   $googleMap.href = mapUrl(place)
-  $about.href = aboutUrl(name, country)
+  $about.href = aboutUrl(name, countryName)
   $when.innerText = relTime(date)
   $weather.innerText = weather
   $temp.innerText = Math.round(temp)
   $feelsLike.innerText = Math.round(feelsLike)
   $humidity.innerText = Math.round(humidity)
   $wetbulb.innerText = Math.round(wetbulb)
+  $humanEffect.innerText = humanEffect(wetbulb)
 }
 
 while (true) {
