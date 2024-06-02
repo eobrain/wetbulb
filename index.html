@@ -30,26 +30,26 @@
             <p><span id="$when"></span>
                 in <a id="$googleMap" target="_blank"><span id="$place"></span></a>
                 the wet-bulb temperature will be
-                <a id="$about" target="_blank"><big><span id="$wetbulb"></span>°C</big></a>,
+                <a id="$about" target="_blank"><big><span id="$wetbulb"></span>°<span class="unit"></span></big></a>,
                 which will <span id="$humanEffect"></span>.
                 The humidity will be <span id="$humidity"></span>% and
-                the actual temperature will be <big><span id="$temp"></span>°C</big>.
+                the actual temperature will be <big><span id="$temp"></span>°<span class="unit"></span></big>.
                 There will will be <span id="$weather"></span>, and
-                it will feel like <big><span id="$feelsLike"></span>°C</big>.
+                it will feel like <big><span id="$feelsLike"></span>°<span class="unit"></span></big>.
             </p>
-            <aside>That's wet-bulb of <big><span id="$wetbulbF"></span>°F</big>,
-                actual <big><span id="$tempF"></span>°F</big>,
-                and feeling like <big><span id="$feelsLikeF"></span>°F</big></aside>
+            <aside>Show temperatures in <select id="$units">
+                <option value="C" selected>°C</option>
+                <option value="F">°F</option>
+            </select></aside>
         </section>
         <section>
             <figure id="map" class="map"></figure>
         </section>
         <section>
             <p>
-                The closer wetbulb temperature gets to human body temperature (37°C) the less you can sweat
+                The closer wetbulb temperature gets to human body temperature (<span id="$bodyTemp"></span>°<span class="unit"></span>) the less you can sweat
                 and so the closer you are to being killed by heat.
             </p>
-            <aside>That's 98°F</aside>
             <figure>
                 <img src="img/sun.jpg">
             </figure>

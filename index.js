@@ -3,12 +3,26 @@ import countryNames from './country-names.js'
 import { tabu, currentPlace } from './optimize.js'
 import { drawDot } from './world.js'
 
-/* global $place $temp $tempF $feelsLike $feelsLikeF
-   $humidity $wetbulb $wetbulbF $humanEffect
+/* global $place $units
+   $temp $feelsLike $wetbulb $bodyTemp
+   $humidity  $humanEffect
    $when $weather $googleMap $about */
 
 const MAX_WB = 37
 const MIN_WB = 5
+
+const farenheit = (celsius) => celsius * 9 / 5 + 32
+const celsius = (celsius) => celsius
+
+let units = celsius
+
+$units.onclick = () => {
+  if ($units.value === 'F') {
+    units = farenheit
+  } else if ($units.value === 'C') {
+    units = celsius
+  }
+}
 
 const uncachedGet = async (location) => {
   const { name, country, date, weather, population, description, main } = await openweathermap(location)
@@ -49,8 +63,6 @@ const mapUrl = ({ lat, lon }) =>
 const aboutUrl = (name, country) =>
   `https://www.google.com/search?q=%22${encodeURIComponent(name)}%22+${encodeURIComponent(country)}+excessive+heat`
 
-const farenheit = (celsius) => celsius * 9 / 5 + 32
-
 const HOUR = 1000 * 60 * 60
 
 const relTime = date => {
@@ -86,14 +98,13 @@ async function show ({ name, country, date, weather, description, temp, humidity
   $humidity.innerText = Math.round(humidity)
   $humanEffect.innerText = humanEffect(wetbulb)
 
-  $temp.innerText = Math.round(temp)
-  $tempF.innerText = Math.round(farenheit(temp))
-
-  $feelsLike.innerText = Math.round(feelsLike)
-  $feelsLikeF.innerText = Math.round(farenheit(feelsLike))
-
-  $wetbulb.innerText = Math.round(wetbulb)
-  $wetbulbF.innerText = Math.round(farenheit(wetbulb))
+  $temp.innerText = Math.round(units(temp))
+  $feelsLike.innerText = Math.round(units(feelsLike))
+  $wetbulb.innerText = Math.round(units(wetbulb))
+  $bodyTemp.innerText = Math.round(units(36.9))
+  document.querySelectorAll('.unit').forEach(($span) => {
+    $span.innerText = $units.value
+  })
 }
 
 while (true) {
