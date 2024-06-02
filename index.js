@@ -53,22 +53,25 @@ const farenheit = (celsius) => celsius * 9 / 5 + 32
 
 const HOUR = 1000 * 60 * 60
 
-const relTime = date => Math.round((date.valueOf() - Date.now()) / HOUR) + ' hours'
+const relTime = date => {
+  const hours = Math.round((date.valueOf() - Date.now()) / HOUR)
+  return (hours > 1) ? `${hours} hours from now` : 'Currently or recently'
+}
 
 function humanEffect (wetbulb) {
   if (wetbulb < 21) {
-    return 'is fine'
+    return 'be fine'
   }
   if (wetbulb < 28) {
-    return 'is uncomfortable'
+    return 'be uncomfortable'
   }
   if (wetbulb < 31) {
-    return 'could kill many vulnerable people'
+    return 'kill vulnerable people who are unprotected'
   }
   if (wetbulb < 35) {
-    return 'makes it impossible to do physical labor'
+    return 'make it impossible to do physical labor'
   }
-  return 'will kill you'
+  return 'kill everyone who is not protected'
 }
 
 async function show ({ name, country, date, weather, description, temp, humidity, feelsLike, wetbulb }) {
