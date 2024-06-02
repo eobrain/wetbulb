@@ -50,13 +50,13 @@ export function drawDot ({ lat, lon }, wetbulb, minWB, maxWB) {
   })
   feature.setStyle(new ol.style.Style({
     image: new ol.style.Circle({
-      radius: 10,
+      radius: 3,
       fill: new ol.style.Fill({ color: color(wetbulb, minWB, maxWB) })
     })
   }))
   marker.setStyle(new ol.style.Style({
     image: new ol.style.Circle({
-      radius: 12,
+      radius: 4,
       stroke: new ol.style.Stroke({ color: [0, 0, 255] })
     })
   }))
