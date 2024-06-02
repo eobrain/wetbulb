@@ -4,6 +4,7 @@ import { currentPlace } from './optimize.js'
 
 /* global $place $units
    $temp $feelsLike $wetbulb $bodyTemp
+   $sweatability
    $humidity  $humanEffect
    $when $weather $googleMap $about */
 
@@ -31,16 +32,16 @@ const relTime = date => {
 
 function humanEffect (wetbulb) {
   if (wetbulb < 21) {
-    return 'be fine'
+    return 'be OK'
   }
   if (wetbulb < 28) {
     return 'be uncomfortable'
   }
   if (wetbulb < 31) {
-    return 'kill vulnerable people who are unprotected'
+    return 'kill vulnerable people'
   }
   if (wetbulb < 35) {
-    return 'make it impossible to do physical labor'
+    return 'kill vulnerable people and make it impossible to do physical labor'
   }
   return 'kill everyone who is not protected'
 }
@@ -58,12 +59,15 @@ export function setData (data) {
   theData = data
 }
 
+const BODY_TEMP = 36.9
+
 function showTemperatures () {
   const { temp, feelsLike, wetbulb } = theData
   $temp.innerText = Math.round(units(temp))
   $feelsLike.innerText = Math.round(units(feelsLike))
   $wetbulb.innerText = Math.round(units(wetbulb))
-  $bodyTemp.innerText = Math.round(units(36.9))
+  $sweatability.innerText = Math.round(units(BODY_TEMP) - units(wetbulb))
+  $bodyTemp.innerText = Math.round(units(BODY_TEMP))
   document.querySelectorAll('.unit').forEach(($span) => {
     $span.innerText = $units.value
   })
