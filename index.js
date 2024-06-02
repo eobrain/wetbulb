@@ -55,7 +55,7 @@ const HOUR = 1000 * 60 * 60
 
 const relTime = date => {
   const hours = Math.round((date.valueOf() - Date.now()) / HOUR)
-  return (hours > 1) ? `${hours} hours from now` : 'Currently or recently'
+  return (hours > 1) ? `${hours} hours from now` : 'About now'
 }
 
 function humanEffect (wetbulb) {
