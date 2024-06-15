@@ -92,6 +92,37 @@ async function tabuMove (scale, get, show) {
   return true
 }
 
+async function hillclimbMove (scale, get, show) {
+  let highestResult = { wetbulb: wetbulbAtPlace }
+  let highestPlace = place
+  let moved = false
+
+  for (const delta of DELTAS) {
+    const latLon = plus(place, delta, scale)
+    const result = await get(latLon)
+    if (!result) {
+      continue
+    }
+    if (result.wetbulb > highestResult.wetbulb) {
+      highestResult = result
+      highestPlace = latLon
+      moved = true
+    }
+  }
+  if (!moved) {
+    return false
+  }
+  if (highestResult.wetbulb > worstWetbulb) {
+    worstWetbulb = highestResult.wetbulb
+    worstPlace = highestPlace
+  }
+  await show(highestResult)
+  place.lat = highestPlace.lat
+  place.lon = highestPlace.lon
+  wetbulbAtPlace = highestResult.wetbulb
+  return true
+}
+
 const K = 10
 const START_QUANTIZATION_DEG = 20
 const startQuantization = degree =>
@@ -147,6 +178,18 @@ export async function tabu (get, show) {
       if (!(await tabuMove(scale, get, show))) {
         break
       }
+    }
+    moveToWorst(get, show)
+    await sleep(10000)
+  }
+}
+
+export async function hillclimb (get, show) {
+  await randomStart(get, show)
+
+  for (let scale = 128; scale >= 1; scale /= 2) {
+    while ((await hillclimbMove(scale, get, show))) {
+      // await sleep(1000)
     }
     moveToWorst(get, show)
     await sleep(10000)
