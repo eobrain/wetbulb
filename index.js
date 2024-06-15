@@ -1,5 +1,5 @@
 import openweathermap from './openweathermap.js'
-import { tabu } from './optimize.js'
+import { tabu, currentPlace } from './optimize.js'
 import { setData, showData } from './view.js'
 
 const uncachedGet = async (location) => {
@@ -38,7 +38,7 @@ const get = async (location) => {
 
 async function show (data) {
   setData(data)
-  showData()
+  showData(currentPlace())
 }
 
 while (true) {

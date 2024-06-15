@@ -1,6 +1,5 @@
 import countryNames from './country-names.js'
 import { drawDot } from './world.js'
-import { currentPlace } from './optimize.js'
 
 /* global $place $units
    $temp $feelsLike $wetbulb $bodyTemp
@@ -73,10 +72,9 @@ function showTemperatures () {
   })
 }
 
-export function showData () {
+export function showData (place) {
   const { name, country, date, weather, humidity, wetbulb } = theData
   const countryName = countryNames[country] || country
-  const place = currentPlace()
   $place.innerText = (name || `${place.lat},${place.lon}`) + ', ' + countryName
   $googleMap.href = mapUrl(place)
   $about.href = aboutUrl(name, countryName)
