@@ -1,0 +1,12 @@
+{
+  "name": "wetbulb",
+  "version": "1.0.0",
+  "description": "Where in the world are there dangerous combinations of heat and humidity?",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eamonn O'Brien-Strain",
+  "license": "ISC"
+}
