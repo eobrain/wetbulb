@@ -1,4 +1,5 @@
 import sleep from './sleep.js'
+import { get } from './cached.js'
 
 // const randomElement = array => array[Math.floor(Math.random() * array.length)]
 
@@ -199,7 +200,7 @@ async function tabu (get, show) {
   }
 } */
 
-export async function optimize (get, show) {
+export async function optimize (show) {
   await tabu(get, show)
   return await moveToWorst(get, show)
 }

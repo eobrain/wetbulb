@@ -1,9 +1,10 @@
 import { drawDot } from './world.js'
-import { relTime, BODY_TEMP, humanEffect } from './display.js'
+import { relTime, BODY_TEMP, humanEffect, tile } from './display.js'
 
 /* global $place $units
    $temp $feelsLike $wetbulb $bodyTemp
    $sweatability
+   $tile
    $humidity  $humanEffect
    $when $weather $googleMap $about */
 
@@ -56,6 +57,7 @@ export function showData (place) {
   $weather.innerText = weather
   $humidity.innerText = Math.round(humidity)
   $humanEffect.innerText = humanEffect(wetbulb)
+  $tile.src = tile(place)
 
   showTemperatures()
   drawDot(place, wetbulb, MIN_WB, MAX_WB)

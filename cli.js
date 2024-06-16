@@ -1,9 +1,8 @@
-import { get } from './cached.js'
 import { optimize, currentPlace } from './optimize.js'
 import { relTime, BODY_TEMP, humanEffect, tile } from './display.js'
 
 let count = 0
-const { worstPlace, worstResult } = await optimize(get, data => {
+const { worstPlace, worstResult } = await optimize(data => {
   console.log(++count, currentPlace())
 })
 
