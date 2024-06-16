@@ -22,3 +22,12 @@ export function humanEffect (wetbulb) {
   }
   return 'kill everyone who is not protected'
 }
+
+const ZOOM = 6
+
+export function tile ({ lat, lon }) {
+  // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+  const x = Math.floor((lon + 180) / 360 * Math.pow(2, ZOOM))
+  const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, ZOOM))
+  return `https://tile.openstreetmap.org/${ZOOM}/${x}/${y}.png`
+}

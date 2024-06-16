@@ -1,6 +1,6 @@
 import { get } from './cached.js'
 import { optimize, currentPlace } from './optimize.js'
-import { relTime, BODY_TEMP, humanEffect } from './display.js'
+import { relTime, BODY_TEMP, humanEffect, tile } from './display.js'
 
 let count = 0
 const { worstPlace, worstResult } = await optimize(get, data => {
@@ -29,4 +29,6 @@ The actual temperature will be ${temp}°C
 It will feel like ${feelsLike}°C
 
 There will will be ${worstResult.weather}
+
+${tile(worstPlace)}
 `)
