@@ -1,5 +1,5 @@
 import { drawDot } from './world.js'
-import { relTime, BODY_TEMP, humanEffect, tile } from './display.js'
+import { relTime, BODY_TEMP, humanEffect, tile } from './heat-wave.js'
 
 /* global $place $units
    $temp $feelsLike $wetbulb $bodyTemp
