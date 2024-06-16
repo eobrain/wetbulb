@@ -1,9 +1,11 @@
 import { optimize, currentPlace } from './optimize.js'
 import { relTime, BODY_TEMP, humanEffect, tile } from './display.js'
 
+const api = (lat, lon) => `https://weather-424404.uc.r.appspot.com/?lat=${lat}&lon=${lon}`
+// const api = (lat, lon) => `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=YOUR_API_KEY`
+
 let count = 0
-const { worstPlace, worstResult } = await optimize(
-  (lat, lon) => `https://weather-424404.uc.r.appspot.com/?lat=${lat}&lon=${lon}`,
+const { worstPlace, worstResult } = await optimize(api,
   data => {
     console.log(++count, currentPlace())
   })
