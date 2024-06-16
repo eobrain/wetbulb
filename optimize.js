@@ -174,7 +174,7 @@ async function tabu (get, show) {
   await randomStart(get, show)
   let worst
 
-  for (let scale = 16384; scale >= 1; scale /= 2) {
+  for (let scale = 16384; scale >= 1; scale /= 8) {
     for (let i = 0; i < 100; ++i) {
       // await sleep(1000)
       if (!(await tabuMove(scale, get, show))) {
@@ -182,7 +182,7 @@ async function tabu (get, show) {
       }
     }
     worst = moveToWorst(get, show)
-    await sleep(10000)
+    // await sleep(10000)
   }
   return worst
 }

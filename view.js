@@ -1,4 +1,3 @@
-import countryNames from './country-names.js'
 import { drawDot } from './world.js'
 
 /* global $place $units
@@ -74,10 +73,9 @@ function showTemperatures () {
 
 export function showData (place) {
   const { name, country, date, weather, humidity, wetbulb } = theData
-  const countryName = countryNames[country] || country
-  $place.innerText = (name || `${place.lat},${place.lon}`) + ', ' + countryName
+  $place.innerText = (name || `${place.lat},${place.lon}`) + ', ' + country
   $googleMap.href = mapUrl(place)
-  $about.href = aboutUrl(name, countryName)
+  $about.href = aboutUrl(name, country)
   $when.innerText = relTime(date)
   $weather.innerText = weather
   $humidity.innerText = Math.round(humidity)

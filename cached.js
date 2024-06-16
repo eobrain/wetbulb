@@ -1,4 +1,5 @@
 import openweathermap from './openweathermap.js'
+import countryNames from './country-names.js'
 
 const uncachedGet = async (location) => {
   const { name, country, date, weather, population, description, main } = await openweathermap(location)
@@ -12,7 +13,17 @@ const uncachedGet = async (location) => {
 
   const { temp, humidity, feels_like: feelsLike, wetbulb } = main
 
-  return { name, country, date, weather, description, temp, humidity, feelsLike, wetbulb }
+  return {
+    name,
+    country: countryNames[country] || country,
+    date,
+    weather,
+    description,
+    temp,
+    humidity,
+    feelsLike,
+    wetbulb
+  }
 }
 
 const cache = new Map()
