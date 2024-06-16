@@ -1,8 +1,8 @@
 import openweathermap from './openweathermap.js'
 import countryNames from './country-names.js'
 
-const uncachedGet = async (location) => {
-  const { name, country, date, weather, population, description, main } = await openweathermap(location)
+const uncachedGet = async (api, location) => {
+  const { name, country, date, weather, population, description, main } = await openweathermap(api, location)
 
   if (!name || population === 0) {
     return undefined
@@ -30,7 +30,7 @@ const cache = new Map()
 let hitCount = 0
 let totalCount = 0
 
-export const get = async (location) => {
+export const get = async (api, location) => {
   if ((totalCount % 100) === 99) {
     console.log(`hit rate ${Math.round(100 * hitCount / totalCount)}`)
   }
@@ -40,7 +40,7 @@ export const get = async (location) => {
     ++hitCount
     return cache.get(key)
   }
-  const result = await uncachedGet(location)
+  const result = await uncachedGet(api, location)
   cache.set(key, result)
   return result
 }

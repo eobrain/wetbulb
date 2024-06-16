@@ -2,9 +2,11 @@ import { optimize, currentPlace } from './optimize.js'
 import { relTime, BODY_TEMP, humanEffect, tile } from './display.js'
 
 let count = 0
-const { worstPlace, worstResult } = await optimize(data => {
-  console.log(++count, currentPlace())
-})
+const { worstPlace, worstResult } = await optimize(
+  (lat, lon) => `https://weather-424404.uc.r.appspot.com/?lat=${lat}&lon=${lon}`,
+  data => {
+    console.log(++count, currentPlace())
+  })
 
 console.log(worstPlace, worstResult)
 

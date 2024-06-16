@@ -60,7 +60,7 @@ const plus = (ll, delta, scale) => {
 
 const visited = new Set()
 
-async function tabuMove (scale, get, show) {
+async function tabuMove (scale, api, show) {
   let highestResult = { wetbulb: -10000 }
   let highestPlace
 
@@ -69,7 +69,7 @@ async function tabuMove (scale, get, show) {
     if (visited.has(JSON.stringify(latLon))) {
       continue
     }
-    const result = await get(latLon)
+    const result = await get(api, latLon)
     if (!result) {
       continue
     }
@@ -129,18 +129,18 @@ const START_QUANTIZATION_DEG = 20
 const startQuantization = degree =>
   START_QUANTIZATION_DEG * Math.round(degree / START_QUANTIZATION_DEG)
 
-async function randomStart (get, show) {
+async function randomStart (api, show) {
   let result
   while (!result) {
     place.lat = startQuantization(Math.random() * 180 - 90)
     place.lon = startQuantization(Math.random() * 360 - 180)
-    result = await get(place)
+    result = await get(api, place)
   }
   // wetbulbAtPlace = result.wetbulb
   await show(result)
 }
 
-async function moveToWorst (get, show) {
+async function moveToWorst (api, show) {
   if (!worstPlace) {
     await sleep(1000)
     return
@@ -148,7 +148,7 @@ async function moveToWorst (get, show) {
   place.lat = worstPlace.lat
   place.lon = worstPlace.lon
   // wetbulbAtPlace = worstWetbulb
-  const worstResult = await get(worstPlace)
+  const worstResult = await get(api, worstPlace)
   await show(worstResult)
   return { worstPlace, worstResult }
 }
@@ -171,18 +171,18 @@ async function moveToWorst (get, show) {
   }
 } */
 
-async function tabu (get, show) {
-  await randomStart(get, show)
+async function tabu (api, show) {
+  await randomStart(api, show)
   let worst
 
   for (let scale = 16384; scale >= 1; scale /= 8) {
     for (let i = 0; i < 100; ++i) {
       // await sleep(1000)
-      if (!(await tabuMove(scale, get, show))) {
+      if (!(await tabuMove(scale, api, show))) {
         break
       }
     }
-    worst = moveToWorst(get, show)
+    worst = moveToWorst(api, show)
     // await sleep(10000)
   }
   return worst
@@ -200,7 +200,7 @@ async function tabu (get, show) {
   }
 } */
 
-export async function optimize (show) {
-  await tabu(get, show)
-  return await moveToWorst(get, show)
+export async function optimize (api, show) {
+  await tabu(api, show)
+  return await moveToWorst(api, show)
 }

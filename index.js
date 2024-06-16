@@ -9,6 +9,8 @@ async function show (data) {
 }
 
 while (true) {
-  await optimize(show)
+  await optimize(
+    (lat, lon) => `https://weather-424404.uc.r.appspot.com/?lat=${lat}&lon=${lon}`,
+    show)
   await sleep(60 * 60 * 1000)
 }
