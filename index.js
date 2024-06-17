@@ -1,5 +1,5 @@
 import { setData, showData } from './view.js'
-import { optimize, currentPlace } from './optimize.js'
+import { optimize, currentPlace } from './heat-wave.js'
 
 const sleep = (delayMs) => new Promise((resolve) => setTimeout(resolve, delayMs))
 
