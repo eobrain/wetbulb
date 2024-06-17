@@ -1,5 +1,5 @@
 import { setData, showData } from './view.js'
-import { optimize, currentPlace } from './heat-wave.js'
+import { optimize, currentPlace } from 'https://unpkg.com/wetbulb'
 
 const sleep = (delayMs) => new Promise((resolve) => setTimeout(resolve, delayMs))
 
