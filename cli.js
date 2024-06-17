@@ -1,4 +1,4 @@
-import { optimize, currentPlace, relTime, BODY_TEMP, humanEffect, tile } from './heat-wave.js'
+import { optimize, currentPlace, relTime, BODY_TEMP, humanEffect, tile } from 'wetbulb'
 
 const api = (lat, lon) => `https://weather-424404.uc.r.appspot.com/?lat=${lat}&lon=${lon}`
 // const api = (lat, lon) => `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=YOUR_API_KEY`
