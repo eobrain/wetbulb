@@ -13,17 +13,19 @@ console.log(worstPlace, worstResult)
 
 const when = relTime(worstResult.date)
 const wetbulb = Math.round(worstResult.wetbulb)
-const sweatability = Math.round(BODY_TEMP - worstResult.wetbulb)
+const sweatability = Math.abs(Math.round(BODY_TEMP - worstResult.wetbulb))
 const effect = humanEffect(worstResult.wetbulb)
 const humidity = Math.round(worstResult.humidity)
 const temp = Math.round(worstResult.temp)
 const feelsLike = Math.round(worstResult.feelsLike)
+const preposition = wetbulb < BODY_TEMP ? "below" : "above"
+const s = sweatability == 1 ? "" : "s"
 
 console.log(`
 ${when} in ${worstResult.name}, ${worstResult.country}
 the wet-bulb temperature will be ${wetbulb}°C
 
-This will be a margin of ${sweatability} degrees below body temperature
+This will be ${sweatability} degree${s} ${preposition} body temperature
 which will ${effect}.
 
 The humidity will be ${humidity}%
