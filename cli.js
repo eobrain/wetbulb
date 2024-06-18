@@ -30,7 +30,7 @@ The humidity will be ${humidity}%
 The actual temperature will be ${temp}°C
 It will feel like ${feelsLike}°C
 
-There will will be ${worstResult.weather}
+There will be ${worstResult.weather}
 
 ${tile(worstPlace)}
 `)
