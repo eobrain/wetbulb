@@ -26,7 +26,7 @@ $units.onclick = () => {
 }
 
 const mapUrl = ({ lat, lon }) =>
-    `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=8`
+    `https://maps.google.com/?ll=${lat},${lon}&q=${lat},${lon}&z=5`
 const aboutUrl = (name, country) =>
     `https://www.google.com/search?q=%22${encodeURIComponent(name)}%22+${encodeURIComponent(country)}+excessive+heat`
 
