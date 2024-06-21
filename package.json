@@ -1,5 +1,5 @@
 {
-  "name": "wetbulb",
+  "name": "wetbulb-app",
   "version": "1.0.0",
   "description": "Where in the world are there dangerous combinations of heat and humidity?",
   "main": "index.js",
@@ -10,6 +10,6 @@
   "author": "Eamonn O'Brien-Strain",
   "license": "ISC",
   "dependencies": {
-    "wetbulb": "^0.0.2"
+    "wetbulb": "^0.1.0"
   }
 }

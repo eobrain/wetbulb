@@ -3,11 +3,17 @@ import { optimize, currentPlace, relTime, BODY_TEMP, humanEffect, tile } from 'w
 const api = (lat, lon) => `https://weather-424404.uc.r.appspot.com/?lat=${lat}&lon=${lon}`
 // const api = (lat, lon) => `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=YOUR_API_KEY`
 
+const minLat = 24.396308
+const maxLat = 49.384358
+const minLon = -125.0
+const maxLon = -66.93457
+
 let count = 0
 const { worstPlace, worstResult } = await optimize(api,
   data => {
     console.log(++count, currentPlace())
-  })
+  },
+  { minLat, maxLat, minLon, maxLon })
 
 console.log(worstPlace, worstResult)
 
