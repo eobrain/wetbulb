@@ -38,11 +38,14 @@ export function setData (data) {
 
 function showTemperatures () {
   const { temp, feelsLike, wetbulb } = theData
+  const sweatability =  Math.abs(Math.round(units(BODY_TEMP) - units(wetbulb)))
   $temp.innerText = Math.round(units(temp))
   $feelsLike.innerText = Math.round(units(feelsLike))
   $wetbulb.innerText = Math.round(units(wetbulb))
-  $sweatability.innerText = Math.round(units(BODY_TEMP) - units(wetbulb))
+  $sweatability.innerText = sweatability
   $bodyTemp.innerText = Math.round(units(BODY_TEMP))
+  $preposition.innerText = wetbulb < BODY_TEMP ? "below" : "above"
+  $s.innerText = sweatability == 1 ? "" : "s"
   document.querySelectorAll('.unit').forEach(($span) => {
     $span.innerText = $units.value
   })
